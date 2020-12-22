@@ -535,6 +535,7 @@ export class FormFilling {
         let searchSentToKeePass = false;
 
         // For every form, including any pseudo forms we created earlier
+        console.log(`findMatchesInThisFrame: ${forms.length}`);
         for (let i = 0; i < forms.length; i++) {
             const form = forms[i];
             this.matchResult.entries[i] = [];
@@ -632,6 +633,7 @@ export class FormFilling {
         submitTargetNeighbour: HTMLElement,
         formNumber: number
     ) {
+        console.log("formFilling: attachSubmitHandlers");
         try {
             await Promise.resolve();
             const start = performance.now();

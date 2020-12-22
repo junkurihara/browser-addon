@@ -62,6 +62,7 @@ export class FormSaving {
     // to every click on the document body or tracking all input events but performance?
     private submitHandler(_e: Event, form: HTMLFormElement) {
         this.Logger.debug("submitHandler called");
+        console.log("submitHandler called");
 
         // Until the next time we have searched for forms in this page,
         // don't respond to any form submission related events
@@ -93,6 +94,13 @@ export class FormSaving {
         const usernameIndex = scanResult.actualUsernameIndex;
         const passwords = scanResult.pwFields;
         const otherFields = scanResult.otherFields;
+
+        console.log("usernameIndex");
+        console.log(usernameIndex);
+        console.log("passwords");
+        console.log(passwords);
+        console.log("otherFields");
+        console.log(otherFields);
 
         if (passwords.length > 1) {
             // could be password change form or multi-password login form or sign up form
@@ -182,7 +190,7 @@ export class FormSaving {
                 isRegistrationForm
             };
 
-            this.myPort.postMessage({ submittedData } as AddonMessage);
+            this.myPort.postMessage({ submittedData } as AddonMessage); // TODO: 多分ここだけ変えれば行ける
         }
     }
 

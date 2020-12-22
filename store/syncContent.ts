@@ -18,6 +18,7 @@ export class SyncContent {
     }
 
     init(initialState: KeeState, sendMutation, vueInit?) {
+        console.log("syncContent: init");
         this.sendMutation = sendMutation;
 
         this.store.replaceState(initialState);
