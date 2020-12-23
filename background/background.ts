@@ -1,21 +1,23 @@
-import { Kee } from "./KF";
-import { commandManager } from "./commands";
+// import { Kee } from "./KF";
+// import { commandManager } from "./commands";
 import { KeeLog } from "../common/Logger";
 import { configManager } from "../common/ConfigManager";
-import { Action } from "../common/Action";
+import { pageMessageHandler } from "./messageHandlers";
 import { AddonMessage } from "../common/AddonMessage";
+// import { Action } from "../common/Action";
+// import { AddonMessage } from "../common/AddonMessage";
 import store from "../store";
 // import { PersistentLogger } from "../common/PersistentLogger";
 
 const userBusySeconds = 60 * 15;
 const maxUpdateDelaySeconds = 60 * 60 * 8;
 
-declare global {
-    interface Window {
-        kee: Kee;
-    }
-    // interface Window { kee: Kee; KeePersistentLogger: PersistentLogger; }
-}
+// declare global {
+//     interface Window {
+//         kee: Kee;
+//     }
+//     // interface Window { kee: Kee; KeePersistentLogger: PersistentLogger; }
+// }
 
 // window.KeePersistentLogger = new PersistentLogger();
 
@@ -29,11 +31,11 @@ async function startup() {
     // window.KeePersistentLogger.init(configManager.current.logLevel >= 4);
     KeeLog.attachConfig(configManager.current);
     await showReleaseNotesAfterUpdate();
-    window.kee = new Kee();
-    window.kee.init();
-    configManager.addChangeListener(() =>
-        window.kee.configSyncManager.updateToRemoteConfig(configManager.current)
-    );
+    // window.kee = new Kee();
+    // window.kee.init();
+    // configManager.addChangeListener(() =>
+    //     window.kee.configSyncManager.updateToRemoteConfig(configManager.current)
+    // );
     browser.browserAction.enable();
 }
 
@@ -70,34 +72,56 @@ browser.tabs.onActivated.addListener(event => {
 function onTabActivated(tabId) {
     updateForegroundTab(tabId);
 
-    if (window.kee) {
-        // May not have set up kee yet
-        commandManager.setupContextMenuItems();
-    }
+    // if (window.kee) {
+    //     // May not have set up kee yet
+    //     commandManager.setupContextMenuItems();
+    // }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
 function updateForegroundTab(tabId: number) {
-    if (window.kee && window.kee.foregroundTabId !== tabId) {
-        // May not have set up kee yet
-        window.kee.foregroundTabId = tabId;
-        if (window.kee.tabStates.has(tabId) && window.kee.tabStates.get(tabId).framePorts) {
-            // May not have set up port yet
-            if (KeeLog && KeeLog.debug) KeeLog.debug("kee activated on tab: " + tabId);
-            window.kee.tabStates.get(tabId).framePorts.forEach(port => {
-                port.postMessage({
-                    isForegroundTab: true,
-                    action: Action.DetectForms,
-                    resetState: store.state
-                } as AddonMessage);
-            });
-        }
-    }
+    // if (window.kee && window.kee.foregroundTabId !== tabId) {
+    //     // May not have set up kee yet
+    //     window.kee.foregroundTabId = tabId;
+    //     if (window.kee.tabStates.has(tabId) && window.kee.tabStates.get(tabId).framePorts) {
+    //         // May not have set up port yet
+    //         if (KeeLog && KeeLog.debug) KeeLog.debug("kee activated on tab: " + tabId);
+    //         window.kee.tabStates.get(tabId).framePorts.forEach(port => {
+    //             port.postMessage({
+    //                 isForegroundTab: true,
+    //                 action: Action.DetectForms,
+    //                 resetState: store.state
+    //             } as AddonMessage);
+    //         });
+    //     }
+    // }
 }
 
 // Some browsers (e.g. Firefox) automatically inject content scripts on install/update
 // but others don't (e.g. Chrome). To ensure every existing tab has exactly one
 // instance of this content script running in it, we programatically inject the script.
 if (!__KeeIsRunningInAWebExtensionsBrowser) {
+    // TODO: とりあえずここでconnectで繋がるようにする。KF.tsが本来の定義場所
+    browser.runtime.onConnect.addListener(p => {
+        console.log("Connected!");
+
+        p.onMessage.addListener(response => {
+            console.log("onMessage"); // TODO: OnMessageのメッセージフォーマットはちゃんと読まないとダメですね。
+            console.log(response);
+        }); // pageMessageHandler.bind(p));
+        const tabId = p.sender.tab.id;
+        const frameId = p.sender.frameId;
+        const connectMessage = {
+            initialState: store.state,
+            frameId,
+            tabId,
+            isForegroundTab: true // tabId === window.kee.foregroundTabId
+        } as AddonMessage;
+        console.log(connectMessage);
+        p.postMessage(connectMessage);
+    });
+    ///////////////////////////////////////////////////
+
     browser.runtime.onInstalled.addListener(() => {
         const showErrors = () => {
             if (browser.runtime.lastError) {
@@ -140,21 +164,22 @@ if (!__KeeIsRunningInAWebExtensionsBrowser) {
     });
 }
 
-browser.runtime.onInstalled.addListener(async function (details) {
-    if (details.reason === "install") {
-        const vaultTabs = await browser.tabs.query({
-            url: ["https://keevault.pm/*", "https://app-beta.kee.pm/*", "https://app-dev.kee.pm/*"]
-        });
-        if (vaultTabs && vaultTabs[0]) {
-            browser.tabs.update(vaultTabs[0].id, { active: true });
-            browser.windows.update(vaultTabs[0].windowId, { focused: true });
-        } else {
-            browser.tabs.create({
-                url: "release-notes/install-notes.html"
-            });
-        }
-    }
-});
+// TODO: インストール直後に表示されるページのリスナー
+// browser.runtime.onInstalled.addListener(async function (details) {
+//     if (details.reason === "install") {
+//         const vaultTabs = await browser.tabs.query({
+//             url: ["https://keevault.pm/*", "https://app-beta.kee.pm/*", "https://app-dev.kee.pm/*"]
+//         });
+//         if (vaultTabs && vaultTabs[0]) {
+//             browser.tabs.update(vaultTabs[0].id, { active: true });
+//             browser.windows.update(vaultTabs[0].windowId, { focused: true });
+//         } else {
+//             browser.tabs.create({
+//                 url: "release-notes/install-notes.html"
+//             });
+//         }
+//     }
+// });
 
 browser.runtime.onUpdateAvailable.addListener(async () => {
     await configManager.setASAP({ mustShowReleaseNotesAtStartup: true });

@@ -172,6 +172,7 @@ function startup() {
 
 // TODO: これが処理の振り分けになる
 function connectToMessagingPort() {
+    console.log("connectToMessagingPort");
     if (Port.raw) {
         KeeLog.warn("port already set to: " + Port.raw.name);
     }
@@ -278,9 +279,7 @@ let pageShowFired = false;
 let configReady = false;
 let missingPageShowTimer: number;
 
-// TODO: For Debugging, 設定する場所はちゃんと見つけること
 KeeLog.attachConfig({ logLevel: 4 });
-
 configManager.load(() => {
     configReady = true;
     if (pageShowFired) {
