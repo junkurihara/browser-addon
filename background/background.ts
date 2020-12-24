@@ -2,12 +2,14 @@
 // import { commandManager } from "./commands";
 import { KeeLog } from "../common/Logger";
 import { configManager } from "../common/ConfigManager";
-import { pageMessageHandler } from "./messageHandlers";
+// import { pageMessageHandler } from "./messageHandlers";
 import { AddonMessage } from "../common/AddonMessage";
 // import { Action } from "../common/Action";
 // import { AddonMessage } from "../common/AddonMessage";
 import store from "../store";
 // import { PersistentLogger } from "../common/PersistentLogger";
+
+import * as storage from "./newMessageHandlers";
 
 const userBusySeconds = 60 * 15;
 const maxUpdateDelaySeconds = 60 * 60 * 8;
@@ -106,8 +108,11 @@ if (!__KeeIsRunningInAWebExtensionsBrowser) {
         console.log("Connected!");
 
         p.onMessage.addListener(response => {
-            console.log("onMessage"); // TODO: OnMessageのメッセージフォーマットはちゃんと読まないとダメですね。
-            console.log(response);
+            ///////////////////////////////////////////
+            // TODO TODO TODO:
+            console.log("onMessage, handleMessage at storage.ts"); // TODO: OnMessageのメッセージフォーマットはちゃんと読まないとダメですね。
+            storage.handleMessage(response);
+            //////////////////////////////////////////
         }); // pageMessageHandler.bind(p));
         const tabId = p.sender.tab.id;
         const frameId = p.sender.frameId;
@@ -117,6 +122,7 @@ if (!__KeeIsRunningInAWebExtensionsBrowser) {
             tabId,
             isForegroundTab: true // tabId === window.kee.foregroundTabId
         } as AddonMessage;
+        console.log("connectMessage");
         console.log(connectMessage);
         p.postMessage(connectMessage);
     });
