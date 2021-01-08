@@ -1,7 +1,8 @@
 import { Action } from "../common/Action";
 import { KeeURL } from "../common/KeeURL";
+import { AddonMessage } from "../common/AddonMessage";
 
-export const handleMessage = async msg => {
+export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) {
     console.log("------------- storage -------------");
     console.log(msg);
 
@@ -32,10 +33,10 @@ export const handleMessage = async msg => {
         //     null,
         //     null
         // );
-        // this.postMessage({
-        //     isForegroundTab: this.sender.tab.id === window.kee.foregroundTabId,
-        //     findMatchesResult: result
-        // } as AddonMessage);
+        p.postMessage({
+            isForegroundTab: true,
+            findMatchesResult: matchedEntry
+        } as AddonMessage);
     }
     if (msg.removeNotification) {
         console.log("msg.removeNotification");

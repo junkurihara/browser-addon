@@ -107,11 +107,11 @@ if (!__KeeIsRunningInAWebExtensionsBrowser) {
     browser.runtime.onConnect.addListener(p => {
         console.log("Connected!");
 
-        p.onMessage.addListener(response => {
+        p.onMessage.addListener(async response => {
             ///////////////////////////////////////////
             // TODO TODO TODO:
             console.log("onMessage, handleMessage at storage.ts"); // TODO: OnMessageのメッセージフォーマットはちゃんと読まないとダメですね。
-            storage.handleMessage(response);
+            await storage.handleMessage(p, response);
             //////////////////////////////////////////
         }); // pageMessageHandler.bind(p));
         const tabId = p.sender.tab.id;

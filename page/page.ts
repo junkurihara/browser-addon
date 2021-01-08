@@ -221,7 +221,12 @@ function connectToMessagingPort() {
         }
 
         if (m.findMatchesResult) {
+            console.log("m.findMatchesResult");
+            //////////////////
+            // TODO: ここでfindMatchesResultを整形しなければならない 2021/01/08
+            console.log(m.findMatchesResult);
             formFilling.findLoginsResultHandler(m.findMatchesResult);
+            //////////////////
         }
 
         if (m.action == Action.ManualFill && m.selectedEntryIndex != null) {
