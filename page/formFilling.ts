@@ -560,6 +560,9 @@ export class FormFilling {
             const passwordFields = scanResult.pwFields;
             const otherFields = scanResult.otherFields;
 
+            console.log("scanResult in formFilling");
+            console.log(scanResult);
+
             // We want to fill in this form if we find a password field but first
             // we check whether any whitelist or blacklist entries must override that behaviour
             let interestingForm: boolean = null;

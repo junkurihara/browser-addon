@@ -14,25 +14,25 @@ import { Port } from "../common/port";
 /* This orchestrates the main functions of the add-on
 on all website pages except those containing a KPRPC server */
 
-// eslint-disable-next-line no-var
-let keeDuplicationCount;
-
-if (keeDuplicationCount) {
-    if (KeeLog && KeeLog.error) {
-        KeeLog.error(
-            "Duplicate Kee content script instance detected! Found this many other instances: " +
-                keeDuplicationCount
-        );
-    } else {
-        console.error(
-            "Duplicate Kee content script instance detected! Found this many other instances: " +
-                keeDuplicationCount
-        );
-    }
-} else {
-    keeDuplicationCount = 0;
-}
-keeDuplicationCount += 1;
+// // eslint-disable-next-line no-var
+// let keeDuplicationCount;
+//
+// if (keeDuplicationCount) {
+//     if (KeeLog && KeeLog.error) {
+//         KeeLog.error(
+//             "Duplicate Kee content script instance detected! Found this many other instances: " +
+//                 keeDuplicationCount
+//         );
+//     } else {
+//         console.error(
+//             "Duplicate Kee content script instance detected! Found this many other instances: " +
+//                 keeDuplicationCount
+//         );
+//     }
+// } else {
+//     keeDuplicationCount = 0;
+// }
+// keeDuplicationCount += 1;
 
 let formUtils: FormUtils;
 let formFilling: FormFilling;
@@ -225,16 +225,17 @@ function connectToMessagingPort() {
         }
 
         if (m.action == Action.ManualFill && m.selectedEntryIndex != null) {
-            formFilling.closeMatchedLoginsPanel();
+            // formFilling.closeMatchedLoginsPanel(); // TODO: パネルとはなんぞや？
             formFilling.fillAndSubmit(false, null, m.selectedEntryIndex);
         }
 
         if (m.action == Action.ResetForms) {
-            formFilling.removeKeeIconFromAllFields();
+            // formFilling.removeKeeIconFromAllFields(); // TODO: キーアイコンのリムーブは不要
             formSaving.removeAllSubmitHandlers();
         }
 
         if (m.action == Action.Primary) {
+            console.log("Action.primary");
             formFilling.executePrimaryAction();
         }
 
@@ -242,14 +243,14 @@ function connectToMessagingPort() {
         //     passwordGenerator.createGeneratePasswordPanel();
         // }
 
-        if (m.action == Action.CloseAllPanels) {
-            // passwordGenerator.closeGeneratePasswordPanel();
-            formFilling.closeMatchedLoginsPanel();
-        }
+        // if (m.action == Action.CloseAllPanels) {
+        //     // passwordGenerator.closeGeneratePasswordPanel();
+        //     formFilling.closeMatchedLoginsPanel();
+        // }
 
-        if (m.action == Action.ShowMatchedLoginsPanel) {
-            formFilling.createMatchedLoginsPanelInCenter(m.frameId);
-        }
+        // if (m.action == Action.ShowMatchedLoginsPanel) {
+        //     formFilling.createMatchedLoginsPanelInCenter(m.frameId);
+        // }
     });
 }
 
