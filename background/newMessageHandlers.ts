@@ -1,6 +1,7 @@
 import { Action } from "../common/Action";
+import { KeeURL } from "../common/KeeURL";
 
-export const handleMessage = msg => {
+export const handleMessage = async msg => {
     console.log("------------- storage -------------");
     console.log(msg);
 
@@ -17,6 +18,11 @@ export const handleMessage = msg => {
         console.log(
             "msg.findMatches --> ここで頑張ってurlからDBの中にマッチするエントリがあるか探す"
         );
+        const keeUrl = KeeURL.fromString(msg.findMatches.uri);
+        const matchedEntry = await browser.storage.local.get(keeUrl.url.origin);
+        console.log("------ Mathced entry -------");
+        console.log(matchedEntry);
+        console.log("------------");
         // window.kee.tabStates.get(this.sender.tab.id).frames.get(this.sender.frameId).entries = [];
         // const result = await window.kee.findLogins(
         //     msg.findMatches.uri,
@@ -55,6 +61,15 @@ export const handleMessage = msg => {
             creationDate: new Date()
         };
         console.log(persistentItem);
+        const item = {};
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        const keeUrl = KeeURL.fromString(persistentItem.submittedData.url);
+        item[keeUrl.url.origin] = persistentItem.submittedData;
+        await browser.storage.local.set(item);
+
+        console.log("------ current browser.storage.local ------");
+        console.log(await browser.storage.local.get());
+        console.log("------------");
 
         // if (!window.kee.persistentTabStates.get(this.sender.tab.id)) {
         //     window.kee.persistentTabStates.set(this.sender.tab.id, {
