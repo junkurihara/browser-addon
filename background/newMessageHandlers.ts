@@ -1,6 +1,7 @@
 import { Action } from "../common/Action";
 import { KeeURL } from "../common/KeeURL";
 import { AddonMessage } from "../common/AddonMessage";
+import { Entry } from "../common/model/Entry";
 
 export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) {
     console.log("------------- storage -------------");
@@ -24,6 +25,14 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         console.log("------ Mathced entry -------");
         console.log(matchedEntry);
         console.log("------------");
+        const result = Object.keys(matchedEntry).map(
+            key =>
+                new Entry({
+                    fields: matchedEntry[key].fields,
+                    URLs: [key],
+                    title: matchedEntry[key].title
+                })
+        );
         // window.kee.tabStates.get(this.sender.tab.id).frames.get(this.sender.frameId).entries = [];
         // const result = await window.kee.findLogins(
         //     msg.findMatches.uri,
@@ -35,7 +44,7 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         // );
         p.postMessage({
             isForegroundTab: true,
-            findMatchesResult: matchedEntry
+            findMatchesResult: result
         } as AddonMessage);
     }
     if (msg.removeNotification) {
@@ -154,4 +163,4 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         //     window.kee.deleteTabState(this.sender.tab.id);
         // }
     }
-};
+}
