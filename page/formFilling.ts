@@ -2,7 +2,7 @@ import { FilledField } from "./FilledField";
 import { PanelStub, PanelStubOptions } from "./PanelStub";
 import { FormUtils } from "./formsUtils";
 import { FormSaving } from "./formSaving";
-import { KeeFieldIcon } from "./keeFieldIcon";
+// import { KeeFieldIcon } from "./keeFieldIcon";
 import { MatchResult } from "./MatchResult";
 import { FindMatchesBehaviour } from "./findMatchesBehaviour";
 import { KeeLogger, KeeLog } from "../common/Logger";
@@ -48,7 +48,7 @@ class FieldMatchScoreConfig {
 export class FormFilling {
     private findLoginOp: any = {};
     private matchResult: MatchResult = new MatchResult();
-    private keeFieldIcon: KeeFieldIcon;
+    // private keeFieldIcon: KeeFieldIcon;
 
     public matchedLoginsPanelStub: PanelStub;
     private matchedLoginsPanelStubRaf: number;
@@ -68,12 +68,12 @@ export class FormFilling {
         private config: Config,
         private matchFinder: { (uri: string): void }
     ) {
-        this.keeFieldIcon = new KeeFieldIcon(
-            myPort,
-            parentFrameId,
-            formUtils,
-            this.createMatchedLoginsPanelNearNode.bind(this)
-        );
+        // this.keeFieldIcon = new KeeFieldIcon(
+        //     myPort,
+        //     parentFrameId,
+        //     formUtils,
+        //     this.createMatchedLoginsPanelNearNode.bind(this)
+        // );
     }
 
     public executePrimaryAction() {
@@ -907,11 +907,11 @@ export class FormFilling {
             });
 
             // Give the user a way to choose an entry interactively
-            this.keeFieldIcon.addKeeIconToFields(
-                passwordFields,
-                otherFields,
-                orderedEntriesWithPreference
-            );
+            // this.keeFieldIcon.addKeeIconToFields(
+            //     passwordFields,
+            //     otherFields,
+            //     orderedEntriesWithPreference
+            // );
         }
 
         // this records the entry that we eventually choose as the one to fill the chosen form with
@@ -1807,7 +1807,7 @@ export class FormFilling {
     //     return [totalRelevanceScore, fieldMatchSuccesses];
     // }
 
-    public removeKeeIconFromAllFields() {
-        this.keeFieldIcon.removeKeeIconFromAllFields();
-    }
+    // public removeKeeIconFromAllFields() {
+    //     this.keeFieldIcon.removeKeeIconFromAllFields();
+    // }
 }

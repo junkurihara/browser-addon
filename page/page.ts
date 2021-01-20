@@ -226,7 +226,7 @@ function connectToMessagingPort() {
             // TODO: ここでfindMatchesResultを整形しなければならない 2021/01/08
             // const keeUrl = KeeURL.fromString(window.location.href);
             // const result = m.findMatchesResult[keeUrl.url.origin];
-            console.log('findMatchesResult');
+            console.log("findMatchesResult");
             console.log(m.findMatchesResult);
             formFilling.findLoginsResultHandler(m.findMatchesResult);
             //////////////////
