@@ -40,10 +40,10 @@ class FieldMatchScoreConfig {
     punishWrongIDAndName: boolean;
 }
 
-// class VisibleFieldCache {
-//     password: boolean[];
-//     other: boolean[];
-// }
+class VisibleFieldCache {
+    password: boolean[];
+    other: boolean[];
+}
 
 export class FormFilling {
     private findLoginOp: any = {};
@@ -738,14 +738,14 @@ export class FormFilling {
             const formVisible = this.formUtils.isDOMElementVisible(matchResult.submitTargets[i]);
             this.Logger.debug("formVisible: " + formVisible);
 
-            // const visibleFieldCache = {
-            //     other: matchResult.otherFieldsArray[i].map(f =>
-            //         this.formUtils.isDOMElementVisible(f.DOMelement)
-            //     ),
-            //     password: matchResult.passwordFieldsArray[i].map(f =>
-            //         this.formUtils.isDOMElementVisible(f.DOMelement)
-            //     )
-            // };
+            const visibleFieldCache = {
+                other: matchResult.otherFieldsArray[i].map(f =>
+                    this.formUtils.isDOMElementVisible(f.DOMelement)
+                ),
+                password: matchResult.passwordFieldsArray[i].map(f =>
+                    this.formUtils.isDOMElementVisible(f.DOMelement)
+                )
+            };
 
             // determine the relevance of each entry to this form
             // we could skip this when autofilling based on uuid but we would have to check for
@@ -756,24 +756,25 @@ export class FormFilling {
                 // const features = store.state.KeePassDatabases.find(
                 //     db => db.fileName === matchResult.entries[i][v].database.fileName
                 // ).sessionFeatures;
-                // const fieldMatchScoreConfig: FieldMatchScoreConfig = {
-                //     punishWrongIDAndName:
-                //         features.indexOf("KPRPC_FIELD_DEFAULT_NAME_AND_ID_EMPTY") >= 0
+                const fieldMatchScoreConfig: FieldMatchScoreConfig = {
+                    punishWrongIDAndName: true
+                };
+                //        features.indexOf("KPRPC_FIELD_DEFAULT_NAME_AND_ID_EMPTY") >= 0
                 // };
-                // const { score, lowFieldMatchRatio } = this.calculateRelevanceScore(
-                //     matchResult.entries[i][v],
-                //     matchResult.passwordFieldsArray[i],
-                //     matchResult.otherFieldsArray[i],
-                //     matchResult.currentPage,
-                //     formVisible,
-                //     fieldMatchScoreConfig,
-                //     visibleFieldCache
-                // );
+                const { score, lowFieldMatchRatio } = this.calculateRelevanceScore(
+                    matchResult.entries[i][v],
+                    matchResult.passwordFieldsArray[i],
+                    matchResult.otherFieldsArray[i],
+                    matchResult.currentPage,
+                    formVisible,
+                    fieldMatchScoreConfig,
+                    visibleFieldCache
+                );
 
                 // choosing best form should not be affected by lowFieldMatchRatio entry score
                 // but when we come to fill the form we can force ourselves into a no-auto-fill behaviour.
-                // matchResult.entries[i][v].relevanceScore = score;
-                // matchResult.entries[i][v].lowFieldMatchRatio = lowFieldMatchRatio;
+                matchResult.entries[i][v].relevanceScore = score;
+                matchResult.entries[i][v].lowFieldMatchRatio = lowFieldMatchRatio;
 
                 // also set the form index and entry index on the internal entry object so
                 // it will persist when later passed to the UI and we can ultimately
@@ -1092,11 +1093,12 @@ export class FormFilling {
                 if (action.fill || matchResult.mustAutoFillForm) {
                     this.Logger.debug("Going to auto-fill a form");
 
+                    // TODO ほんとにここコメントアウトして大丈夫かどうか不明。
                     // const features = store.state.KeePassDatabases.find(
                     //     db => db.fileName === matchingLogin.database.fileName
                     // ).sessionFeatures;
                     const scoreConfig: FieldMatchScoreConfig = {
-                        punishWrongIDAndName: true
+                        punishWrongIDAndName: true // TODO とりあえずtrueにしているが…
                         //        features.indexOf("KPRPC_FIELD_DEFAULT_NAME_AND_ID_EMPTY") >= 0
                     };
                     const lastFilledPasswords = this.fillManyFormFields(
@@ -1600,212 +1602,212 @@ export class FormFilling {
         */
     }
 
-    // private calculateRelevanceScore(
-    //     entry: Entry,
-    //     passwordFields: MatchedField[],
-    //     otherFields: MatchedField[],
-    //     currentPage: number,
-    //     formVisible: boolean,
-    //     scoreConfig: FieldMatchScoreConfig,
-    //     visibleFieldCache: VisibleFieldCache
-    // ) {
-    //     let score = 0;
-    //     let lowFieldMatchRatio = false;
-    //
-    //     // Kee 3.4+ no longer considers priority overrides because they were
-    //     // complicated and unreliable even when fully understood.
-    //
-    //     // Kee 1.5+ no longer considers action URLs in relevance weighting. Since the only
-    //     // entry entries of interest are already pre-matched by KeePass, this should have been
-    //     // adding negligable accuracy to the form matching.
-    //
-    //     score += entry.matchAccuracy;
-    //
-    //     // Punish but don't entirely exclude matches against invisible forms
-    //     // This is in addition to the maximum score of invisible fields being limited
-    //     // so that forms with some visible fields but invisible username/password
-    //     // fields (or our best guess at them anyway) are considered a less likely match
-    //     if (!formVisible) score -= 20;
-    //
-    //     // This is similar to _fillManyFormFields so might be able to reuse the results in future
-    //     // (but need to watch for changes that invalidate the earlier calculations).
-    //
-    //     // Require at least a type match for 2-field forms (e.g. user/pass); 1 missing
-    //     // match for 3 or 4 field forms; etc.
-    //     const minMatchedFieldCountRatio = 0.501;
-    //
-    //     const [otherRelevanceScore, otherFieldMatchSuccesses] = this.determineRelevanceScores(
-    //         "other",
-    //         otherFields,
-    //         entry.fields.filter(f => f.type !== "password"),
-    //         currentPage,
-    //         scoreConfig,
-    //         visibleFieldCache.other
-    //     );
-    //     const [passwordRelevanceScore, passwordFieldMatchSuccesses] = this.determineRelevanceScores(
-    //         "password",
-    //         passwordFields,
-    //         entry.fields.filter(f => f.type === "password"),
-    //         currentPage,
-    //         scoreConfig,
-    //         visibleFieldCache.password
-    //     );
-    //
-    //     const totalRelevanceScore = otherRelevanceScore + passwordRelevanceScore;
-    //
-    //     // Only consider fields that can ever match above the minimum (essentially
-    //     // ignore empty form or entry fields). Will underestimate number of form
-    //     // fields, resulting in increased match ratio and less accurate relevancy
-    //     // scores for forms that contain a username/password field with no name
-    //     // or id attributes. No idea if this will cause a problem. Seems to.
-    //     // Mitigating by adjusting min relevancy values, etc. so can remove
-    //     // this comment in a few versions if all is good.
-    //     // v3.5 still not good. Have fixed a visibility bug, which exacerbates
-    //     // some other bugs. Will try ignoring non-text/password fields in ratio
-    //     // calculation for autofill (can extend to form selection calculation later if good)
-    //     const formFieldCount = passwordFields
-    //         .concat(otherFields)
-    //         .filter(f => f.field.locators[0].id || f.field.locators[0].name || f.field.value)
-    //         .length;
-    //     const loginFieldCount = entry.fields.filter(
-    //         f => f.locators[0].id || f.locators[0].name || f.value
-    //     ).length;
-    //     const formFieldCountForAutofill = passwordFields
-    //         .concat(otherFields)
-    //         .filter(
-    //             f =>
-    //                 (f.field.type === "password" || f.field.type === "text") &&
-    //                 (f.field.locators[0].id || f.field.locators[0].name)
-    //         ).length;
-    //     const loginFieldCountForAutofill = entry.fields.filter(
-    //         f =>
-    //             (f.type === "password" || f.type === "text") &&
-    //             (f.locators[0].id || f.locators[0].name || f.value)
-    //     ).length;
-    //
-    //     const formMatchedFieldCountForAutofill =
-    //         otherFieldMatchSuccesses.filter(s => s === true).length +
-    //         passwordFieldMatchSuccesses.filter(s => s === true).length;
-    //
-    //     const numberOfNewPasswordFields = passwordFields.filter(f =>
-    //         f.field.locators[0].autocompleteValues?.some(v => v === "new-password")
-    //     ).length;
-    //
-    //     // Limiting to number of entry fields will reduce false positives but
-    //     //increase chance of a valid form being missed.
-    //     // To help with password changing, we treat any known "new password" fields as an automatic match
-    //     const fieldMatchRatioForAutofill =
-    //         Math.min(
-    //             loginFieldCountForAutofill + numberOfNewPasswordFields,
-    //             formMatchedFieldCountForAutofill
-    //         ) / Math.max(1, formFieldCountForAutofill);
-    //
-    //     this.Logger.debug(
-    //         "formFieldCount: " +
-    //             formFieldCount +
-    //             ", loginFieldCount: " +
-    //             loginFieldCount +
-    //             ", loginFieldCountForAutofill: " +
-    //             loginFieldCountForAutofill +
-    //             ", formFieldCountForAutofill: " +
-    //             formFieldCountForAutofill +
-    //             ", formMatchedFieldCountForAutofill: " +
-    //             formMatchedFieldCountForAutofill +
-    //             ", numberOfNewPasswordFields: " +
-    //             numberOfNewPasswordFields +
-    //             ", fieldMatchRatio: " +
-    //             fieldMatchRatioForAutofill
-    //     );
-    //
-    //     if (fieldMatchRatioForAutofill < minMatchedFieldCountRatio) {
-    //         this.Logger.info(
-    //             entry.uuid +
-    //                 " will be forced to not auto-fill because the form field match ratio (" +
-    //                 fieldMatchRatioForAutofill +
-    //                 ") is not high enough."
-    //         );
-    //         lowFieldMatchRatio = true;
-    //     }
-    //
-    //     const averageFieldRelevance =
-    //         totalRelevanceScore / Math.max(formFieldCount, loginFieldCount);
-    //     const adjustedRelevance =
-    //         averageFieldRelevance / (Math.abs(formFieldCount - loginFieldCount) + 1);
-    //
-    //     score += adjustedRelevance;
-    //
-    //     this.Logger.info("Relevance for " + entry.uuid + " is: " + score);
-    //     return { score: score, lowFieldMatchRatio: lowFieldMatchRatio };
-    // }
+    private calculateRelevanceScore(
+        entry: Entry,
+        passwordFields: MatchedField[],
+        otherFields: MatchedField[],
+        currentPage: number,
+        formVisible: boolean,
+        scoreConfig: FieldMatchScoreConfig,
+        visibleFieldCache: VisibleFieldCache
+    ) {
+        let score = 0;
+        let lowFieldMatchRatio = false;
 
-    // private determineRelevanceScores(
-    //     debugName: string,
-    //     matchedFields: MatchedField[],
-    //     entryFields: Field[],
-    //     currentPage: number,
-    //     scoreConfig: FieldMatchScoreConfig,
-    //     visibleFieldMap: boolean[]
-    // ): [number, boolean[]] {
-    //     let totalRelevanceScore = 0;
-    //     const minFieldRelevance = 1;
-    //     const fieldMatchSuccesses: boolean[] = [];
-    //
-    //     for (let i = 0; i < matchedFields.length; i++) {
-    //         let mostRelevantScore = 0;
-    //         const formField = matchedFields[i].field;
-    //
-    //         if (formField.locators[0].autocompleteValues?.some(v => v === "new-password")) {
-    //             // Record as a successful match for the purposes of match ratio calculations
-    //             // if this is a new password field as part of a change password form. So we
-    //             // don't affect the selection of the form or entry to fill but when all
-    //             // else is equal, we will have a higher chance of auto-filling the existing
-    //             // user name and password fields.
-    //             fieldMatchSuccesses[i] = true;
-    //         }
-    //
-    //         for (let j = 0; j < entryFields.length; j++) {
-    //             const fmScore = this.calculateFieldMatchScore(
-    //                 matchedFields[i],
-    //                 entryFields[j],
-    //                 currentPage,
-    //                 scoreConfig,
-    //                 visibleFieldMap[i]
-    //             );
-    //             this.Logger.debug(
-    //                 "Suitability of putting " +
-    //                     debugName +
-    //                     " field " +
-    //                     j +
-    //                     " into form field " +
-    //                     i +
-    //                     " (id: " +
-    //                     formField.locators[0].id +
-    //                     ") is " +
-    //                     fmScore
-    //             );
-    //             if (fmScore > mostRelevantScore) {
-    //                 mostRelevantScore = fmScore;
-    //             }
-    //             const fmScoreForRatio = fmScore - (visibleFieldMap[i] ? 0 : 10);
-    //             if (
-    //                 (formField.type === "text" || formField.type === "password") &&
-    //                 fmScoreForRatio >= minFieldRelevance &&
-    //                 entryFields[j].value &&
-    //                 !fieldMatchSuccesses[i]
-    //             ) {
-    //                 fieldMatchSuccesses[i] = true;
-    //             }
-    //             if (
-    //                 matchedFields[i].highestScore == null ||
-    //                 fmScore > matchedFields[i].highestScore
-    //             ) {
-    //                 matchedFields[i].highestScore = fmScore;
-    //             }
-    //         }
-    //         totalRelevanceScore += mostRelevantScore;
-    //     }
-    //     return [totalRelevanceScore, fieldMatchSuccesses];
-    // }
+        // Kee 3.4+ no longer considers priority overrides because they were
+        // complicated and unreliable even when fully understood.
+
+        // Kee 1.5+ no longer considers action URLs in relevance weighting. Since the only
+        // entry entries of interest are already pre-matched by KeePass, this should have been
+        // adding negligable accuracy to the form matching.
+
+        score += entry.matchAccuracy;
+
+        // Punish but don't entirely exclude matches against invisible forms
+        // This is in addition to the maximum score of invisible fields being limited
+        // so that forms with some visible fields but invisible username/password
+        // fields (or our best guess at them anyway) are considered a less likely match
+        if (!formVisible) score -= 20;
+
+        // This is similar to _fillManyFormFields so might be able to reuse the results in future
+        // (but need to watch for changes that invalidate the earlier calculations).
+
+        // Require at least a type match for 2-field forms (e.g. user/pass); 1 missing
+        // match for 3 or 4 field forms; etc.
+        const minMatchedFieldCountRatio = 0.501;
+
+        const [otherRelevanceScore, otherFieldMatchSuccesses] = this.determineRelevanceScores(
+            "other",
+            otherFields,
+            entry.fields.filter(f => f.type !== "password"),
+            currentPage,
+            scoreConfig,
+            visibleFieldCache.other
+        );
+        const [passwordRelevanceScore, passwordFieldMatchSuccesses] = this.determineRelevanceScores(
+            "password",
+            passwordFields,
+            entry.fields.filter(f => f.type === "password"),
+            currentPage,
+            scoreConfig,
+            visibleFieldCache.password
+        );
+
+        const totalRelevanceScore = otherRelevanceScore + passwordRelevanceScore;
+
+        // Only consider fields that can ever match above the minimum (essentially
+        // ignore empty form or entry fields). Will underestimate number of form
+        // fields, resulting in increased match ratio and less accurate relevancy
+        // scores for forms that contain a username/password field with no name
+        // or id attributes. No idea if this will cause a problem. Seems to.
+        // Mitigating by adjusting min relevancy values, etc. so can remove
+        // this comment in a few versions if all is good.
+        // v3.5 still not good. Have fixed a visibility bug, which exacerbates
+        // some other bugs. Will try ignoring non-text/password fields in ratio
+        // calculation for autofill (can extend to form selection calculation later if good)
+        const formFieldCount = passwordFields
+            .concat(otherFields)
+            .filter(f => f.field.locators[0].id || f.field.locators[0].name || f.field.value)
+            .length;
+        const loginFieldCount = entry.fields.filter(
+            f => f.locators[0].id || f.locators[0].name || f.value
+        ).length;
+        const formFieldCountForAutofill = passwordFields
+            .concat(otherFields)
+            .filter(
+                f =>
+                    (f.field.type === "password" || f.field.type === "text") &&
+                    (f.field.locators[0].id || f.field.locators[0].name)
+            ).length;
+        const loginFieldCountForAutofill = entry.fields.filter(
+            f =>
+                (f.type === "password" || f.type === "text") &&
+                (f.locators[0].id || f.locators[0].name || f.value)
+        ).length;
+
+        const formMatchedFieldCountForAutofill =
+            otherFieldMatchSuccesses.filter(s => s === true).length +
+            passwordFieldMatchSuccesses.filter(s => s === true).length;
+
+        const numberOfNewPasswordFields = passwordFields.filter(f =>
+            f.field.locators[0].autocompleteValues?.some(v => v === "new-password")
+        ).length;
+
+        // Limiting to number of entry fields will reduce false positives but
+        //increase chance of a valid form being missed.
+        // To help with password changing, we treat any known "new password" fields as an automatic match
+        const fieldMatchRatioForAutofill =
+            Math.min(
+                loginFieldCountForAutofill + numberOfNewPasswordFields,
+                formMatchedFieldCountForAutofill
+            ) / Math.max(1, formFieldCountForAutofill);
+
+        this.Logger.debug(
+            "formFieldCount: " +
+                formFieldCount +
+                ", loginFieldCount: " +
+                loginFieldCount +
+                ", loginFieldCountForAutofill: " +
+                loginFieldCountForAutofill +
+                ", formFieldCountForAutofill: " +
+                formFieldCountForAutofill +
+                ", formMatchedFieldCountForAutofill: " +
+                formMatchedFieldCountForAutofill +
+                ", numberOfNewPasswordFields: " +
+                numberOfNewPasswordFields +
+                ", fieldMatchRatio: " +
+                fieldMatchRatioForAutofill
+        );
+
+        if (fieldMatchRatioForAutofill < minMatchedFieldCountRatio) {
+            this.Logger.info(
+                entry.uuid +
+                    " will be forced to not auto-fill because the form field match ratio (" +
+                    fieldMatchRatioForAutofill +
+                    ") is not high enough."
+            );
+            lowFieldMatchRatio = true;
+        }
+
+        const averageFieldRelevance =
+            totalRelevanceScore / Math.max(formFieldCount, loginFieldCount);
+        const adjustedRelevance =
+            averageFieldRelevance / (Math.abs(formFieldCount - loginFieldCount) + 1);
+
+        score += adjustedRelevance;
+
+        this.Logger.info("Relevance for " + entry.uuid + " is: " + score);
+        return { score: score, lowFieldMatchRatio: lowFieldMatchRatio };
+    }
+
+    private determineRelevanceScores(
+        debugName: string,
+        matchedFields: MatchedField[],
+        entryFields: Field[],
+        currentPage: number,
+        scoreConfig: FieldMatchScoreConfig,
+        visibleFieldMap: boolean[]
+    ): [number, boolean[]] {
+        let totalRelevanceScore = 0;
+        const minFieldRelevance = 1;
+        const fieldMatchSuccesses: boolean[] = [];
+
+        for (let i = 0; i < matchedFields.length; i++) {
+            let mostRelevantScore = 0;
+            const formField = matchedFields[i].field;
+
+            if (formField.locators[0].autocompleteValues?.some(v => v === "new-password")) {
+                // Record as a successful match for the purposes of match ratio calculations
+                // if this is a new password field as part of a change password form. So we
+                // don't affect the selection of the form or entry to fill but when all
+                // else is equal, we will have a higher chance of auto-filling the existing
+                // user name and password fields.
+                fieldMatchSuccesses[i] = true;
+            }
+
+            for (let j = 0; j < entryFields.length; j++) {
+                const fmScore = this.calculateFieldMatchScore(
+                    matchedFields[i],
+                    entryFields[j],
+                    currentPage,
+                    scoreConfig,
+                    visibleFieldMap[i]
+                );
+                this.Logger.debug(
+                    "Suitability of putting " +
+                        debugName +
+                        " field " +
+                        j +
+                        " into form field " +
+                        i +
+                        " (id: " +
+                        formField.locators[0].id +
+                        ") is " +
+                        fmScore
+                );
+                if (fmScore > mostRelevantScore) {
+                    mostRelevantScore = fmScore;
+                }
+                const fmScoreForRatio = fmScore - (visibleFieldMap[i] ? 0 : 10);
+                if (
+                    (formField.type === "text" || formField.type === "password") &&
+                    fmScoreForRatio >= minFieldRelevance &&
+                    entryFields[j].value &&
+                    !fieldMatchSuccesses[i]
+                ) {
+                    fieldMatchSuccesses[i] = true;
+                }
+                if (
+                    matchedFields[i].highestScore == null ||
+                    fmScore > matchedFields[i].highestScore
+                ) {
+                    matchedFields[i].highestScore = fmScore;
+                }
+            }
+            totalRelevanceScore += mostRelevantScore;
+        }
+        return [totalRelevanceScore, fieldMatchSuccesses];
+    }
 
     // public removeKeeIconFromAllFields() {
     //     this.keeFieldIcon.removeKeeIconFromAllFields();
