@@ -205,7 +205,7 @@ function connectToMessagingPort() {
             //     // before looking for matching entries.
             //     syncContent.reset(m.resetState);
             // }
-            formFilling.removeKeeIconFromAllFields();
+            // formFilling.removeKeeIconFromAllFields();
             formSaving.removeAllSubmitHandlers();
 
             if (store.state.entryUpdateStartedAtTimestamp >= Date.now() - 20000) {
@@ -273,7 +273,7 @@ window.addEventListener("pagehide", () => {
     console.log("pagehide");
     inputsObserver.disconnect();
     if (Port.raw) Port.postMessage({ action: Action.PageHide });
-    formFilling.removeKeeIconFromAllFields();
+    // formFilling.removeKeeIconFromAllFields();
     Port.shutdown();
     connected = false;
     frameId = undefined;
