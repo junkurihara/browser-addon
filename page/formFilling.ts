@@ -565,7 +565,6 @@ export class FormFilling {
             console.log("-------- scanResult.otherFields n formFilling");
             console.log(scanResult.otherFields);
 
-
             // We want to fill in this form if we find a password field but first
             // we check whether any whitelist or blacklist entries must override that behaviour
             let interestingForm: boolean = null;
