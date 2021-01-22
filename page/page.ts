@@ -95,12 +95,14 @@ function onFirstConnect(myFrameId: number) {
 }
 
 const inputsObserver = new MutationObserver(mutations => {
-    console.log("inputs observer: some mutation get invoked on a page");
+    console.log(
+        "inputs observer: some mutation get invoked on a page: mutation.length" + mutations.length
+    );
     // If we have already scheduled a rescan recently, no further action required
     if (formFilling.formFinderTimer !== null) return;
 
-    // Only proceed if we have a DB to search
-    if (!store.state.connected || store.state.ActiveKeePassDatabaseIndex < 0) return;
+    // // Only proceed if we have a DB to search
+    // if (!store.state.connected || store.state.ActiveKeePassDatabaseIndex < 0) return;
 
     let rescan = false;
     const interestingNodes = ["form", "input", "select"];

@@ -560,8 +560,11 @@ export class FormFilling {
             const passwordFields = scanResult.pwFields;
             const otherFields = scanResult.otherFields;
 
-            console.log("scanResult in formFilling");
-            console.log(scanResult);
+            console.log("-------- scanResult.pwFields in formFilling");
+            console.log(scanResult.pwFields);
+            console.log("-------- scanResult.otherFields n formFilling");
+            console.log(scanResult.otherFields);
+
 
             // We want to fill in this form if we find a password field but first
             // we check whether any whitelist or blacklist entries must override that behaviour
@@ -838,7 +841,7 @@ export class FormFilling {
         if (formIndex >= 0) mostRelevantFormIndex = formIndex;
         else {
             findMatchesResult.formRelevanceScores.forEach((c, index) => {
-                this.Logger.debug("Relevance of form is " + c);
+                this.Logger.debug("Relevance of form is " + c + ", index = " + index);
                 if (c > findMatchesResult.formRelevanceScores[mostRelevantFormIndex]) {
                     mostRelevantFormIndex = index;
                 }
@@ -884,6 +887,12 @@ export class FormFilling {
 
         if (!isMatchedLoginRequest) {
             matchResult.mostRelevantFormIndex = this.getMostRelevantForm().bestFormIndex;
+            console.log(
+                "------------------------ most relevant form index: " +
+                    matchResult.mostRelevantFormIndex
+            );
+            console.log("------------------------");
+            console.log(matchResult);
         }
 
         // Supplied formID overrides any that we just automatically calculated above
