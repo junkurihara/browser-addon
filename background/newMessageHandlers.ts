@@ -3,6 +3,13 @@ import { KeeURL } from "../common/KeeURL";
 import { AddonMessage } from "../common/AddonMessage";
 import { Entry } from "../common/model/Entry";
 
+const getParentDomain = (level: number, domain: string): string => {
+    console.log("------------ getParentDomain -----------");
+    console.log(level);
+    console.log(domain);
+    return "";
+};
+
 export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) {
     console.log("------------- storage -------------");
     console.log(msg);
@@ -18,13 +25,22 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
 
     if (msg.findMatches) {
         console.log(
-            "msg.findMatches --> ここで頑張ってurlからDBの中にマッチするエントリがあるか探す"
+            "msg.findMatches --> ここで頑張ってurlからDBの中にマッチするエントリがあるか探す。" +
+                "exact match後に3レベルで検索…"
         );
         const keeUrl = KeeURL.fromString(msg.findMatches.uri);
-        const matchedEntry = await browser.storage.local.get(keeUrl.url.origin);
+        console.log(keeUrl.url);
+        console.log(keeUrl.domainWithPort);
+        console.log(keeUrl.domain);
+        const matchedEntry = await browser.storage.local.get(keeUrl.domainWithPort);
         console.log("------ Mathced entry -------");
         console.log(matchedEntry);
         console.log("------------");
+        if (!matchedEntry) {
+            console.log("null matched entry");
+            const x = getParentDomain(3, keeUrl.domainWithPort);
+            console.log(x);
+        }
         const result = Object.keys(matchedEntry).map(
             key =>
                 new Entry({
@@ -74,7 +90,7 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         const item = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         const keeUrl = KeeURL.fromString(persistentItem.submittedData.url);
-        item[keeUrl.url.origin] = persistentItem.submittedData;
+        item[keeUrl.domainWithPort] = persistentItem.submittedData;
         await browser.storage.local.set(item);
 
         console.log("------ current browser.storage.local ------");
