@@ -36,16 +36,16 @@ const buildDirDebugChrome = "build/debug/chrome";
 const buildDirProdChrome = "build/prod/chrome";
 const globStaticManifest = "manifest.json";
 const globStaticLocales = "_locales/**";
-const globStaticReleaseNotes = "release-notes/*.{js,css,html,map}";
+// const globStaticReleaseNotes = "release-notes/*.{js,css,html,map}";
 const globStaticCommonFonts = "common/fonts/**";
 const globStaticCommonImages = "common/images/**";
 const globStaticCommon = "common/*.{css,html}";
 const globStaticLib = "lib/**/*.*";
-const globStaticDialogs = "dialogs/*.{css,html}";
-const globStaticSettings = "settings/*.{css,html}";
+// const globStaticDialogs = "dialogs/*.{css,html}";
+// const globStaticSettings = "settings/*.{css,html}";
 const globStaticBackground = "background/*.{css,html}";
 const globStaticPage = "page/*.{css,html}";
-const globStaticPanels = "panels/*.{css,html}";
+// const globStaticPanels = "panels/*.{css,html}";
 const globStaticPopup = "popup/*.{css,html}";
 
 /********** CLEANING **********/
@@ -87,21 +87,21 @@ gulp.task("clean:ts", function cleanTS() {
 gulp.task("clean:static:popup", function cleanStaticPopup() {
     return deleteBuildFiles([globStaticPopup]);
 });
-gulp.task("clean:static:panels", function cleanStaticPanels() {
-    return deleteBuildFiles([globStaticPanels]);
-});
+// gulp.task("clean:static:panels", function cleanStaticPanels() {
+//     return deleteBuildFiles([globStaticPanels]);
+// });
 gulp.task("clean:static:page", function cleanStaticPage() {
     return deleteBuildFiles([globStaticPage]);
 });
 gulp.task("clean:static:background", function cleanStaticBackground() {
     return deleteBuildFiles([globStaticBackground]);
 });
-gulp.task("clean:static:settings", function cleanStaticSettings() {
-    return deleteBuildFiles([globStaticSettings]);
-});
-gulp.task("clean:static:dialogs", function cleanStaticDialogs() {
-    return deleteBuildFiles([globStaticDialogs]);
-});
+// gulp.task("clean:static:settings", function cleanStaticSettings() {
+//     return deleteBuildFiles([globStaticSettings]);
+// });
+// gulp.task("clean:static:dialogs", function cleanStaticDialogs() {
+//     return deleteBuildFiles([globStaticDialogs]);
+// });
 gulp.task("clean:static:lib", function cleanStaticLib() {
     return deleteBuildFiles([globStaticLib]);
 });
@@ -114,9 +114,9 @@ gulp.task("clean:static:commonImages", function cleanStaticCommonImages() {
 gulp.task("clean:static:commonFonts", function cleanStaticCommonFonts() {
     return deleteBuildFiles([globStaticCommonFonts]);
 });
-gulp.task("clean:static:releasenotes", function cleanStaticReleaseNotes() {
-    return deleteBuildFiles([globStaticReleaseNotes]);
-});
+// gulp.task("clean:static:releasenotes", function cleanStaticReleaseNotes() {
+//     return deleteBuildFiles([globStaticReleaseNotes]);
+// });
 gulp.task("clean:static:locales", function cleanStaticLocales() {
     return deleteBuildFiles([globStaticLocales]);
 });
@@ -129,15 +129,15 @@ gulp.task(
     gulp.parallel(
         "clean:static:manifest",
         "clean:static:locales",
-        "clean:static:releasenotes",
+        // "clean:static:releasenotes",
         "clean:static:commonFonts",
         "clean:static:commonImages",
         "clean:static:common",
-        "clean:static:dialogs",
-        "clean:static:settings",
+        // "clean:static:dialogs",
+        // "clean:static:settings",
         "clean:static:background",
         "clean:static:page",
-        "clean:static:panels",
+        // "clean:static:panels",
         "clean:static:popup",
         "clean:ts"
     )
@@ -306,14 +306,14 @@ var executeRollup = function () {
     var input = {
         external: ["vue", "vueex", "vuetify"],
         input: {
-            "vault/vault": "./vault/vault.ts",
+            // "vault/vault": "./vault/vault.ts",
             "background/background": "./background/background.ts",
             "popup/popup": "./popup/popup.ts",
-            "settings/settings": "./settings/settings.ts",
-            "panels/panels": "./panels/panels.ts",
-            "page/page": "./page/page.ts",
-            "dialogs/SRP": "./dialogs/SRP.ts",
-            "dialogs/NetworkAuth": "./dialogs/NetworkAuth.ts"
+            // "settings/settings": "./settings/settings.ts",
+            // "panels/panels": "./panels/panels.ts",
+            "page/page": "./page/page.ts"
+            // "dialogs/SRP": "./dialogs/SRP.ts",
+            // "dialogs/NetworkAuth": "./dialogs/NetworkAuth.ts"
         },
         plugins,
         manualChunks(id) {
@@ -418,12 +418,12 @@ gulp.task(
         return copyStatic(globStaticPopup, "/popup");
     })
 );
-gulp.task(
-    "static:panels",
-    gulp.series("clean:static:panels", function staticPanels() {
-        return copyStatic(globStaticPanels, "/panels");
-    })
-);
+// gulp.task(
+//     "static:panels",
+//     gulp.series("clean:static:panels", function staticPanels() {
+//         return copyStatic(globStaticPanels, "/panels");
+//     })
+// );
 gulp.task(
     "static:page",
     gulp.series("clean:static:page", function staticPage() {
@@ -436,18 +436,18 @@ gulp.task(
         return copyStatic(globStaticBackground, "/background");
     })
 );
-gulp.task(
-    "static:settings",
-    gulp.series("clean:static:settings", function staticSettings() {
-        return copyStatic(globStaticSettings, "/settings");
-    })
-);
-gulp.task(
-    "static:dialogs",
-    gulp.series("clean:static:dialogs", function staticDialogs() {
-        return copyStatic(globStaticDialogs, "/dialogs");
-    })
-);
+// gulp.task(
+//     "static:settings",
+//     gulp.series("clean:static:settings", function staticSettings() {
+//         return copyStatic(globStaticSettings, "/settings");
+//     })
+// );
+// gulp.task(
+//     "static:dialogs",
+//     gulp.series("clean:static:dialogs", function staticDialogs() {
+//         return copyStatic(globStaticDialogs, "/dialogs");
+//     })
+// );
 gulp.task(
     "static:lib",
     gulp.series("clean:static:lib", function staticLib() {
@@ -472,12 +472,12 @@ gulp.task(
         return copyStatic(globStaticCommonImages, "/common/images");
     })
 );
-gulp.task(
-    "static:releasenotes",
-    gulp.series("clean:static:releasenotes", function staticReleaseNotes() {
-        return copyStatic(globStaticReleaseNotes, "/release-notes");
-    })
-);
+// gulp.task(
+//     "static:releasenotes",
+//     gulp.series("clean:static:releasenotes", function staticReleaseNotes() {
+//         return copyStatic(globStaticReleaseNotes, "/release-notes");
+//     })
+// );
 gulp.task(
     "static:locales",
     gulp.series("clean:static:locales", function staticLocales() {
@@ -564,15 +564,15 @@ gulp.task(
     "static",
     gulp.parallel(
         "static:popup",
-        "static:panels",
+        // "static:panels",
         "static:page",
         "static:background",
-        "static:settings",
-        "static:dialogs",
+        // "static:settings",
+        // "static:dialogs",
         "static:common",
         "static:commonFonts",
         "static:commonImages",
-        "static:releasenotes",
+        // "static:releasenotes",
         "static:locales",
         "static:manifest",
         "static:lib"
@@ -583,16 +583,16 @@ gulp.task(
 
 function watch() {
     gulp.watch([globStaticPopup], ["static:popup"]);
-    gulp.watch([globStaticPanels], ["static:panels"]);
+    // gulp.watch([globStaticPanels], ["static:panels"]);
     gulp.watch([globStaticPage], ["static:page"]);
     gulp.watch([globStaticBackground], ["static:background"]);
-    gulp.watch([globStaticSettings], ["static:settings"]);
-    gulp.watch([globStaticDialogs], ["static:dialogs"]);
+    // gulp.watch([globStaticSettings], ["static:settings"]);
+    // gulp.watch([globStaticDialogs], ["static:dialogs"]);
     gulp.watch([globStaticLib], ["static:lib"]);
     gulp.watch([globStaticCommon], ["static:common"]);
     gulp.watch([globStaticCommonFonts], ["static:commonFonts"]);
     gulp.watch([globStaticCommonImages], ["static:commonImages"]);
-    gulp.watch([globStaticReleaseNotes], ["static:releasenotes"]);
+    // gulp.watch([globStaticReleaseNotes], ["static:releasenotes"]);
     gulp.watch([globStaticLocales], ["static:locales"]);
     gulp.watch([globStaticManifest], ["static:manifest"]);
 }
