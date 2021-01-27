@@ -37,7 +37,7 @@ const buildDirProdChrome = "build/prod/chrome";
 const globStaticManifest = "manifest.json";
 const globStaticLocales = "_locales/**";
 // const globStaticReleaseNotes = "release-notes/*.{js,css,html,map}";
-const globStaticCommonFonts = "common/fonts/**";
+// const globStaticCommonFonts = "common/fonts/**";
 const globStaticCommonImages = "common/images/**";
 const globStaticCommon = "common/*.{css,html}";
 const globStaticLib = "lib/**/*.*";
@@ -111,9 +111,9 @@ gulp.task("clean:static:common", function cleanStaticCommon() {
 gulp.task("clean:static:commonImages", function cleanStaticCommonImages() {
     return deleteBuildFiles([globStaticCommonImages]);
 });
-gulp.task("clean:static:commonFonts", function cleanStaticCommonFonts() {
-    return deleteBuildFiles([globStaticCommonFonts]);
-});
+// gulp.task("clean:static:commonFonts", function cleanStaticCommonFonts() {
+//     return deleteBuildFiles([globStaticCommonFonts]);
+// });
 // gulp.task("clean:static:releasenotes", function cleanStaticReleaseNotes() {
 //     return deleteBuildFiles([globStaticReleaseNotes]);
 // });
@@ -130,7 +130,7 @@ gulp.task(
         "clean:static:manifest",
         "clean:static:locales",
         // "clean:static:releasenotes",
-        "clean:static:commonFonts",
+        // "clean:static:commonFonts",
         "clean:static:commonImages",
         "clean:static:common",
         // "clean:static:dialogs",
@@ -286,11 +286,11 @@ var executeRollup = function () {
                 {
                     src: "node_modules/vuetify/dist/vuetify.min.js",
                     dest: "lib/pkg"
-                },
-                {
-                    src: "node_modules/vuetify/dist/vuetify.min.css",
-                    dest: "lib/css"
                 }
+                // {
+                //     src: "node_modules/vuetify/dist/vuetify.min.css",
+                //     dest: "lib/css"
+                // }
             ]
         })
     ];
@@ -460,12 +460,12 @@ gulp.task(
         return copyStatic(globStaticCommon, "/common");
     })
 );
-gulp.task(
-    "static:commonFonts",
-    gulp.series("clean:static:commonFonts", function staticCommonFonts() {
-        return copyStatic(globStaticCommonFonts, "/common/fonts");
-    })
-);
+// gulp.task(
+//     "static:commonFonts",
+//     gulp.series("clean:static:commonFonts", function staticCommonFonts() {
+//         return copyStatic(globStaticCommonFonts, "/common/fonts");
+//     })
+// );
 gulp.task(
     "static:commonImages",
     gulp.series("clean:static:commonImages", function staticCommonImages() {
@@ -570,7 +570,7 @@ gulp.task(
         // "static:settings",
         // "static:dialogs",
         "static:common",
-        "static:commonFonts",
+        // "static:commonFonts",
         "static:commonImages",
         // "static:releasenotes",
         "static:locales",
@@ -590,7 +590,7 @@ function watch() {
     // gulp.watch([globStaticDialogs], ["static:dialogs"]);
     gulp.watch([globStaticLib], ["static:lib"]);
     gulp.watch([globStaticCommon], ["static:common"]);
-    gulp.watch([globStaticCommonFonts], ["static:commonFonts"]);
+    // gulp.watch([globStaticCommonFonts], ["static:commonFonts"]);
     gulp.watch([globStaticCommonImages], ["static:commonImages"]);
     // gulp.watch([globStaticReleaseNotes], ["static:releasenotes"]);
     gulp.watch([globStaticLocales], ["static:locales"]);
