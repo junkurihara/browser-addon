@@ -1,5 +1,5 @@
 import { FilledField } from "./FilledField";
-import { PanelStub, PanelStubOptions } from "./PanelStub";
+// import { PanelStub, PanelStubOptions } from "./PanelStub";
 import { FormUtils } from "./formsUtils";
 import { FormSaving } from "./formSaving";
 // import { KeeFieldIcon } from "./keeFieldIcon";
@@ -23,7 +23,7 @@ declare const punycode;
 
 // Pretend browser (WebExtensions) is chrome (we include a
 // polyfill from Mozilla but it doesn't work in some cases)
-declare const chrome;
+// declare const chrome;
 
 class FillAndSubmitAction {
     fill: boolean;
@@ -50,8 +50,8 @@ export class FormFilling {
     private matchResult: MatchResult = new MatchResult();
     // private keeFieldIcon: KeeFieldIcon;
 
-    public matchedLoginsPanelStub: PanelStub;
-    private matchedLoginsPanelStubRaf: number;
+    // public matchedLoginsPanelStub: PanelStub;
+    // private matchedLoginsPanelStubRaf: number;
 
     // Should really make this private and call indirectly but I'm wary of all performance overheads wrt DOM mutation observers
     public formFinderTimer: number = null;
@@ -61,7 +61,7 @@ export class FormFilling {
 
     constructor(
         private myPort: browser.runtime.Port,
-        private parentFrameId: number,
+        // private parentFrameId: number,
         private formUtils: FormUtils,
         private formSaving: FormSaving,
         private Logger: KeeLogger,
@@ -85,56 +85,56 @@ export class FormFilling {
         ) {
             if (this.matchResult.entries[this.matchResult.mostRelevantFormIndex].length == 1) {
                 this.fillAndSubmit(false, this.matchResult.mostRelevantFormIndex, 0);
-                this.closeMatchedLoginsPanel();
+                // this.closeMatchedLoginsPanel();
             } else if (
                 this.matchResult.entries[this.matchResult.mostRelevantFormIndex].length > 1
             ) {
-                this.closeMatchedLoginsPanel();
-                this.matchedLoginsPanelStub = new PanelStub(
-                    PanelStubOptions.MatchedLogins,
-                    null,
-                    this.parentFrameId
-                );
-                this.matchedLoginsPanelStub.createPanel();
+                // this.closeMatchedLoginsPanel();
+                // this.matchedLoginsPanelStub = new PanelStub(
+                //     PanelStubOptions.MatchedLogins,
+                //     null,
+                //     this.parentFrameId
+                // );
+                // this.matchedLoginsPanelStub.createPanel();
             }
         }
     }
 
-    public createMatchedLoginsPanelInCenter(specificFrameId: number) {
-        this.closeMatchedLoginsPanel();
-        this.matchedLoginsPanelStub = new PanelStub(
-            PanelStubOptions.MatchedLogins,
-            null,
-            specificFrameId
-        );
-        this.matchedLoginsPanelStub.createPanel();
-    }
+    // public createMatchedLoginsPanelInCenter(specificFrameId: number) {
+    //     this.closeMatchedLoginsPanel();
+    //     this.matchedLoginsPanelStub = new PanelStub(
+    //         PanelStubOptions.MatchedLogins,
+    //         null,
+    //         specificFrameId
+    //     );
+    //     this.matchedLoginsPanelStub.createPanel();
+    // }
 
-    public createMatchedLoginsPanelNearNode(target: HTMLElement) {
-        this.closeMatchedLoginsPanel();
-        this.matchedLoginsPanelStub = new PanelStub(
-            PanelStubOptions.MatchedLogins,
-            target,
-            this.parentFrameId
-        );
-        this.matchedLoginsPanelStub.createPanel();
-        this.matchedLoginsPanelStubRaf = requestAnimationFrame(() =>
-            this.updateMatchedLoginsPanelPosition()
-        );
-    }
+    // public createMatchedLoginsPanelNearNode(target: HTMLElement) {
+    //     this.closeMatchedLoginsPanel();
+    //     this.matchedLoginsPanelStub = new PanelStub(
+    //         PanelStubOptions.MatchedLogins,
+    //         target,
+    //         this.parentFrameId
+    //     );
+    //     this.matchedLoginsPanelStub.createPanel();
+    //     this.matchedLoginsPanelStubRaf = requestAnimationFrame(() =>
+    //         this.updateMatchedLoginsPanelPosition()
+    //     );
+    // }
 
-    public closeMatchedLoginsPanel() {
-        if (this.matchedLoginsPanelStub) this.matchedLoginsPanelStub.closePanel();
-        this.matchedLoginsPanelStub = null;
-        cancelAnimationFrame(this.matchedLoginsPanelStubRaf);
-    }
+    // public closeMatchedLoginsPanel() {
+    //     if (this.matchedLoginsPanelStub) this.matchedLoginsPanelStub.closePanel();
+    //     this.matchedLoginsPanelStub = null;
+    //     cancelAnimationFrame(this.matchedLoginsPanelStubRaf);
+    // }
 
-    public updateMatchedLoginsPanelPosition() {
-        this.matchedLoginsPanelStub.updateBoundingClientRect();
-        this.matchedLoginsPanelStubRaf = requestAnimationFrame(() =>
-            this.updateMatchedLoginsPanelPosition()
-        );
-    }
+    // public updateMatchedLoginsPanelPosition() {
+    //     this.matchedLoginsPanelStub.updateBoundingClientRect();
+    //     this.matchedLoginsPanelStubRaf = requestAnimationFrame(() =>
+    //         this.updateMatchedLoginsPanelPosition()
+    //     );
+    // }
 
     // Requires KeePassRPC #101
     // private calculateLabelMatchScore(matchedField: MatchedField, dataField: Field) {

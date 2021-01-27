@@ -38,7 +38,7 @@ let formUtils: FormUtils;
 let formFilling: FormFilling;
 let formSaving: FormSaving;
 // let passwordGenerator: PasswordGenerator;
-let frameId: number;
+// let frameId: number;
 // let syncContent: SyncContent;
 let connected = false;
 let messagingPortConnectionRetryTimer: number;
@@ -71,16 +71,17 @@ function matchFinder(uri: string) {
 //     }
 // }
 
-function onFirstConnect(myFrameId: number) {
+function onFirstConnect() {
+    // myFrameId: number
     console.log("onFirstConnect");
-    frameId = myFrameId;
+    // frameId = myFrameId;
 
     KeeLog.attachConfig(configManager.current);
     formUtils = new FormUtils(KeeLog);
     formSaving = new FormSaving(Port.raw, KeeLog, formUtils);
     formFilling = new FormFilling(
         Port.raw,
-        frameId,
+        // frameId,
         formUtils,
         formSaving,
         KeeLog,
@@ -195,7 +196,8 @@ function connectToMessagingPort() {
         // }
 
         if (!connected) {
-            onFirstConnect(m.frameId);
+            onFirstConnect();
+            // m.frameId
             formFilling.findMatchesInThisFrame();
             connected = true;
         } else if (m.action == Action.DetectForms) {
@@ -278,7 +280,7 @@ window.addEventListener("pagehide", () => {
     // formFilling.removeKeeIconFromAllFields();
     Port.shutdown();
     connected = false;
-    frameId = undefined;
+    // frameId = undefined;
     formUtils = undefined;
     formSaving = undefined;
     formFilling = undefined;
