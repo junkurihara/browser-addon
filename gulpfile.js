@@ -308,7 +308,7 @@ var executeRollup = function () {
         input: {
             // "vault/vault": "./vault/vault.ts",
             "background/background": "./background/background.ts",
-            "popup/popup": "./popup/popup.ts",
+            // "popup/popup": "./popup/popup.ts",
             // "settings/settings": "./settings/settings.ts",
             // "panels/panels": "./panels/panels.ts",
             "page/page": "./page/page.ts"
