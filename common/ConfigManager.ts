@@ -7,7 +7,7 @@ import {
     SiteConfigNodeType,
     SiteConfigTarget
 } from "./config";
-import { ConfigMigrations } from "./ConfigMigrations";
+// import { ConfigMigrations } from "./ConfigMigrations";
 import { defaultSiteConfig } from "./DefaultSiteConfig";
 import { utils } from "./utils";
 import { Field } from "./model/Field";
@@ -172,7 +172,7 @@ export class ConfigManager {
                 }
             }
             this.fixInvalidConfigData();
-            this.migrateToLatestVersion();
+            // this.migrateToLatestVersion();
             onLoaded();
         });
     }
@@ -189,41 +189,41 @@ export class ConfigManager {
         if (saveNeeded) this.save();
     }
 
-    private migrateToLatestVersion() {
-        if (this.current.version >= LATEST_VERSION) return;
-        const migrations = new ConfigMigrations();
-        /* eslint-disable no-fallthrough */
-        switch (this.current.version) {
-            case 1:
-                migrations.migrateToVersion2(this.current);
-            case 2:
-                migrations.migrateToVersion3(this.current);
-            case 3:
-                migrations.migrateToVersion4(this.current);
-            case 4:
-                migrations.migrateToVersion5(this.current);
-            case 5:
-                migrations.migrateToVersion6(this.current);
-            case 6:
-                migrations.migrateToVersion7(this.current);
-        }
-        /* eslint-enable no-fallthrough */
-        this.save();
-    }
+    // private migrateToLatestVersion() {
+    //     if (this.current.version >= LATEST_VERSION) return;
+    //     const migrations = new ConfigMigrations();
+    //     /* eslint-disable no-fallthrough */
+    //     switch (this.current.version) {
+    //         case 1:
+    //             migrations.migrateToVersion2(this.current);
+    //         case 2:
+    //             migrations.migrateToVersion3(this.current);
+    //         case 3:
+    //             migrations.migrateToVersion4(this.current);
+    //         case 4:
+    //             migrations.migrateToVersion5(this.current);
+    //         case 5:
+    //             migrations.migrateToVersion6(this.current);
+    //         case 6:
+    //             migrations.migrateToVersion7(this.current);
+    //     }
+    //     /* eslint-enable no-fallthrough */
+    //     this.save();
+    // }
 
-    public migrateFromRemoteToLatestVersion() {
-        if (this.current.version >= LATEST_VERSION) return;
-        const migrations = new ConfigMigrations();
-        /* eslint-disable no-fallthrough */
-        switch (this.current.version) {
-            case 5:
-                migrations.migrateToVersion6(this.current);
-            case 6:
-                migrations.migrateToVersion7(this.current);
-        }
-        /* eslint-enable no-fallthrough */
-        this.save();
-    }
+    // public migrateFromRemoteToLatestVersion() {
+    //     if (this.current.version >= LATEST_VERSION) return;
+    //     const migrations = new ConfigMigrations();
+    //     /* eslint-disable no-fallthrough */
+    //     switch (this.current.version) {
+    //         case 5:
+    //             migrations.migrateToVersion6(this.current);
+    //         case 6:
+    //             migrations.migrateToVersion7(this.current);
+    //     }
+    //     /* eslint-enable no-fallthrough */
+    //     this.save();
+    // }
 
     private reload(onLoaded?) {
         browser.storage.local.get().then(config => {

@@ -1,10 +1,10 @@
 import { Action } from "./Action";
-import { FrameState } from "./FrameState";
-import { KeeNotification } from "./KeeNotification";
+// import { FrameState } from "./FrameState";
+// import { KeeNotification } from "./KeeNotification";
 import { PasswordProfile } from "./model/PasswordProfile";
 import { SubmittedData } from "./SubmittedData";
 import { SaveData } from "./SaveData";
-import { KeeState } from "../store/KeeState";
+// import { KeeState } from "../store/KeeState";
 import { MutationPayload } from "vuex";
 import { Entry } from "./model/Entry";
 
@@ -17,12 +17,12 @@ import { Entry } from "./model/Entry";
 // when required or use static methods instead.
 
 export interface AddonMessage {
-    frameState?: FrameState;
+    // frameState?: FrameState;
     isForegroundTab?: boolean;
     tabId?: number;
     frameId?: number;
     loadUrlUpgradeKee?: boolean;
-    addNotification?: KeeNotification;
+    // addNotification?: KeeNotification;
     removeNotification?: string;
     findMatches?: { uri?: string; uuid?: string; DBfilename?: string };
     findMatchesResult?: Entry[];
@@ -36,8 +36,8 @@ export interface AddonMessage {
     saveData?: SaveData;
     loginEditor?: { uuid: string; DBfilename: string };
     loginsFound?: boolean;
-    initialState?: KeeState;
-    resetState?: KeeState;
+    // initialState?: KeeState;
+    // resetState?: KeeState;
     mutation?: MutationPayload;
     url?: string;
     copyToClipboard?: string;
