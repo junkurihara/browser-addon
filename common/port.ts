@@ -12,7 +12,8 @@ class ContentPortManager {
         }
     };
 
-    public postMessage(msg: AddonMessage){ // | VaultMessage) {
+    public postMessage(msg: AddonMessage) {
+        // | VaultMessage) {
         this.port.postMessage(msg);
     }
 
