@@ -1,5 +1,5 @@
 import { AddonMessage } from "./AddonMessage";
-import { VaultMessage } from "./VaultMessage";
+// import { VaultMessage } from "./VaultMessage";
 
 class ContentPortManager {
     private port: browser.runtime.Port;
@@ -12,7 +12,7 @@ class ContentPortManager {
         }
     };
 
-    public postMessage(msg: AddonMessage | VaultMessage) {
+    public postMessage(msg: AddonMessage){ // | VaultMessage) {
         this.port.postMessage(msg);
     }
 

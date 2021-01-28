@@ -6,7 +6,7 @@ import { configManager } from "../common/ConfigManager";
 import { AddonMessage } from "../common/AddonMessage";
 // import { Action } from "../common/Action";
 // import { AddonMessage } from "../common/AddonMessage";
-import store from "../store";
+// import store from "../store";
 // import { PersistentLogger } from "../common/PersistentLogger";
 
 import * as storage from "./newMessageHandlers";
@@ -117,7 +117,7 @@ if (!__KeeIsRunningInAWebExtensionsBrowser) {
         const tabId = p.sender.tab.id;
         const frameId = p.sender.frameId;
         const connectMessage = {
-            initialState: store.state,
+            // initialState: store.state,
             frameId,
             tabId,
             isForegroundTab: true // tabId === window.kee.foregroundTabId

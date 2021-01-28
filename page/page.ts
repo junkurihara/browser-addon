@@ -6,7 +6,7 @@ import { KeeLog } from "../common/Logger";
 import { configManager } from "../common/ConfigManager";
 import { AddonMessage } from "../common/AddonMessage";
 import { Action } from "../common/Action";
-import store from "../store";
+// import store from "../store";
 // import { SyncContent } from "../store/syncContent"; // TODO: vueについて表示の状態をSyncさせるのにこいつが必要になってくる。
 // import { MutationPayload } from "vuex";
 import { Port } from "../common/port";
@@ -212,16 +212,16 @@ function connectToMessagingPort() {
             // formFilling.removeKeeIconFromAllFields();
             formSaving.removeAllSubmitHandlers();
 
-            if (store.state.entryUpdateStartedAtTimestamp >= Date.now() - 20000) {
-                console.log("time stamp?");
-                formFilling.findMatchesInThisFrame({
-                    autofillOnSuccess: false,
-                    autosubmitOnSuccess: false
-                });
-            } else {
-                console.log("else time stamp?");
-                formFilling.findMatchesInThisFrame();
-            }
+            // if (store.state.entryUpdateStartedAtTimestamp >= Date.now() - 20000) {
+            //     console.log("time stamp?");
+            //     formFilling.findMatchesInThisFrame({
+            //         autofillOnSuccess: false,
+            //         autosubmitOnSuccess: false
+            //     });
+            // } else {
+            console.log("else time stamp?");
+            formFilling.findMatchesInThisFrame();
+            // }
         }
 
         if (m.findMatchesResult) {
