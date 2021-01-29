@@ -60,8 +60,7 @@
                 "lib/tp/publicsuffixlist.min.js",
                 "lib/pkg/vue.runtime.min.js",
                 "lib/pkg/vuex.min.js",
-                "common/common.js",
-                "vault/vault.js"
+                "common/common.js"
         ],
         "run_at": "document_end"
     }],
@@ -82,10 +81,6 @@
         },
         "default_title": "Kee",
         "default_popup": "popup/popup.html"
-    },
-    "options_ui": {
-        "page": "settings/settings.html",
-        "open_in_tab": true
     },
     "permissions": [
         "tabs",
