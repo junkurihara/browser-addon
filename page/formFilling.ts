@@ -1146,7 +1146,7 @@ export class FormFilling {
             ) {
                 this.Logger.debug("Syncing UUID to: " + matchingLogin.uuid);
                 matchResult.UUID = matchingLogin.uuid;
-                matchResult.dbFileName = matchingLogin.database.fileName;
+                // matchResult.dbFileName = matchingLogin.database.fileName;
             }
         }
 

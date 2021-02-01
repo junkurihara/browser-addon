@@ -1,9 +1,9 @@
 import { Icon } from "./Icon";
-import { Database } from "./Database";
+// import { Database } from "./Database";
 import { utils } from "../utils";
 import { Field } from "./Field";
-import { EntryDto, FormFieldTypeDTO } from "./KPRPCDTOs";
-import { DatabaseSummary } from "./DatabaseSummary";
+// import { EntryDto, FormFieldTypeDTO } from "./KPRPCDTOs";
+// import { DatabaseSummary } from "./DatabaseSummary";
 import { GroupSummary } from "./GroupSummary";
 
 // Although we use uuids for Fields and possibly Locators, we don't allow them to exist outside of their parent entry.
@@ -42,7 +42,7 @@ export class Entry {
     readonly neverAutoFill: boolean;
     readonly neverAutoSubmit: boolean;
 
-    readonly database: DatabaseSummary;
+    // readonly database: DatabaseSummary;
 
     // How relevant this entry is to the current form in
     // the browser - transient (not stored in KeePass)
@@ -66,7 +66,7 @@ export class Entry {
         this.title = e.title || "";
         this.matchAccuracy = e.matchAccuracy || 0;
         this.icon = e.icon || { version: 1, iconImageData: "" };
-        this.database = e.database || new Database({});
+        // this.database = e.database || new Database({});
         this.relevanceScore = e.relevanceScore;
         this.lowFieldMatchRatio = e.lowFieldMatchRatio;
         this.formIndex = e.formIndex;
@@ -81,62 +81,62 @@ export class Entry {
         return entry.fields.find(f => f.type === "password");
     }
 
-    public static fromKPRPCEntryDTO(entryDto: EntryDto, db: DatabaseSummary) {
-        const sortedFields: Field[] = [];
-        let maximumPage = 1;
-        const usernameIndex = entryDto.formFieldList.findIndex(
-            f => f.type === FormFieldTypeDTO.username
-        );
+    // public static fromKPRPCEntryDTO(entryDto: EntryDto, db: DatabaseSummary) {
+    //     const sortedFields: Field[] = [];
+    //     let maximumPage = 1;
+    //     const usernameIndex = entryDto.formFieldList.findIndex(
+    //         f => f.type === FormFieldTypeDTO.username
+    //     );
+    //
+    //     const unsortedFields = entryDto.formFieldList.map(f => {
+    //         if (f.page > maximumPage) maximumPage = f.page;
+    //
+    //         return Field.fromKPRPCFieldDTO(f);
+    //     });
+    //     const firstPasswordIndex = unsortedFields.findIndex(f => f.type === "password");
+    //
+    //     if (usernameIndex > -1) {
+    //         sortedFields.push(unsortedFields[usernameIndex]);
+    //     }
+    //     if (firstPasswordIndex > -1) {
+    //         sortedFields.push(unsortedFields[firstPasswordIndex]);
+    //     }
+    //     unsortedFields.forEach((f, i) => {
+    //         if (i !== usernameIndex && i !== firstPasswordIndex) {
+    //             sortedFields.push(f);
+    //         }
+    //     });
+    //
+    //     const entry = new Entry({
+    //         URLs: entryDto.uRLs,
+    //         neverAutoFill: entryDto.neverAutoFill,
+    //         alwaysAutoFill: entryDto.alwaysAutoFill,
+    //         neverAutoSubmit: entryDto.neverAutoSubmit,
+    //         alwaysAutoSubmit: entryDto.alwaysAutoSubmit,
+    //         icon: { version: 1, iconImageData: entryDto.iconImageData },
+    //         parentGroup: GroupSummary.fromKPRPCGroupSummaryDTO(entryDto.parent),
+    //         // database: db,
+    //         matchAccuracy: entryDto.matchAccuracy,
+    //         httpRealm: entryDto.hTTPRealm,
+    //         uuid: entryDto.uniqueID,
+    //         title: entryDto.title,
+    //         fields: sortedFields
+    //     });
+    //
+    //     return entry;
+    // }
 
-        const unsortedFields = entryDto.formFieldList.map(f => {
-            if (f.page > maximumPage) maximumPage = f.page;
-
-            return Field.fromKPRPCFieldDTO(f);
-        });
-        const firstPasswordIndex = unsortedFields.findIndex(f => f.type === "password");
-
-        if (usernameIndex > -1) {
-            sortedFields.push(unsortedFields[usernameIndex]);
-        }
-        if (firstPasswordIndex > -1) {
-            sortedFields.push(unsortedFields[firstPasswordIndex]);
-        }
-        unsortedFields.forEach((f, i) => {
-            if (i !== usernameIndex && i !== firstPasswordIndex) {
-                sortedFields.push(f);
-            }
-        });
-
-        const entry = new Entry({
-            URLs: entryDto.uRLs,
-            neverAutoFill: entryDto.neverAutoFill,
-            alwaysAutoFill: entryDto.alwaysAutoFill,
-            neverAutoSubmit: entryDto.neverAutoSubmit,
-            alwaysAutoSubmit: entryDto.alwaysAutoSubmit,
-            icon: { version: 1, iconImageData: entryDto.iconImageData },
-            parentGroup: GroupSummary.fromKPRPCGroupSummaryDTO(entryDto.parent),
-            database: db,
-            matchAccuracy: entryDto.matchAccuracy,
-            httpRealm: entryDto.hTTPRealm,
-            uuid: entryDto.uniqueID,
-            title: entryDto.title,
-            fields: sortedFields
-        });
-
-        return entry;
-    }
-
-    public static toKPRPCEntryDTO(entry: Entry) {
-        const entryDto = new EntryDto();
-        entryDto.alwaysAutoFill = entry.alwaysAutoFill;
-        entryDto.alwaysAutoSubmit = entry.alwaysAutoSubmit;
-        entryDto.formFieldList = entry.fields.map((f, i) => Field.toKPRPCFieldDTO(f, i === 0));
-        entryDto.hTTPRealm = entry.httpRealm;
-        entryDto.iconImageData = entry.icon.iconImageData;
-        entryDto.neverAutoFill = entry.neverAutoFill;
-        entryDto.neverAutoSubmit = entry.neverAutoSubmit;
-        entryDto.title = entry.title;
-        entryDto.uRLs = entry.URLs;
-        return entryDto;
-    }
+    // public static toKPRPCEntryDTO(entry: Entry) {
+    //     const entryDto = new EntryDto();
+    //     entryDto.alwaysAutoFill = entry.alwaysAutoFill;
+    //     entryDto.alwaysAutoSubmit = entry.alwaysAutoSubmit;
+    //     entryDto.formFieldList = entry.fields.map((f, i) => Field.toKPRPCFieldDTO(f, i === 0));
+    //     entryDto.hTTPRealm = entry.httpRealm;
+    //     entryDto.iconImageData = entry.icon.iconImageData;
+    //     entryDto.neverAutoFill = entry.neverAutoFill;
+    //     entryDto.neverAutoSubmit = entry.neverAutoSubmit;
+    //     entryDto.title = entry.title;
+    //     entryDto.uRLs = entry.URLs;
+    //     return entryDto;
+    // }
 }

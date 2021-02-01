@@ -41,7 +41,7 @@ export class EntrySummary {
             uRLs: entry.URLs,
             url: entry?.URLs[0],
             uuid: entry.uuid,
-            dbFileName: entry.database.fileName,
+            // dbFileName: entry.database.fileName,
             fullDetails: entry,
             isPreferredMatch: entry.isPreferredMatch
         });
