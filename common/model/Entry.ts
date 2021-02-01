@@ -1,10 +1,10 @@
-import { Icon } from "./Icon";
+// import { Icon } from "./Icon";
 // import { Database } from "./Database";
 import { utils } from "../utils";
 import { Field } from "./Field";
 // import { EntryDto, FormFieldTypeDTO } from "./KPRPCDTOs";
 // import { DatabaseSummary } from "./DatabaseSummary";
-import { GroupSummary } from "./GroupSummary";
+// import { GroupSummary } from "./GroupSummary";
 
 // Although we use uuids for Fields and possibly Locators, we don't allow them to exist outside of their parent entry.
 
@@ -33,9 +33,9 @@ export class Entry {
     // or the page URL's hostname if no title is set)
     readonly title: string;
 
-    readonly icon: Icon;
+    // readonly icon: Icon;
 
-    readonly parentGroup: GroupSummary;
+    // readonly parentGroup: GroupSummary;
 
     readonly alwaysAutoFill: boolean;
     readonly alwaysAutoSubmit: boolean;
@@ -61,11 +61,11 @@ export class Entry {
         this.URLs = e.URLs || [];
         this.fields = e.fields || [];
         this.httpRealm = e.httpRealm || "";
-        this.parentGroup = e.parentGroup || null;
+        // this.parentGroup = e.parentGroup || null;
         this.uuid = e.uuid || utils.newGUID();
         this.title = e.title || "";
         this.matchAccuracy = e.matchAccuracy || 0;
-        this.icon = e.icon || { version: 1, iconImageData: "" };
+        // this.icon = e.icon || { version: 1, iconImageData: "" };
         // this.database = e.database || new Database({});
         this.relevanceScore = e.relevanceScore;
         this.lowFieldMatchRatio = e.lowFieldMatchRatio;

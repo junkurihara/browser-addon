@@ -1,6 +1,6 @@
 import { utils } from "../utils";
 import { Locator } from "./Locator";
-import { FieldDto, FormFieldTypeDTO } from "./KPRPCDTOs";
+// import { FieldDto, FormFieldTypeDTO } from "./KPRPCDTOs";
 
 export type FieldType = "password" | "text" | "existing" | "boolean" | "otp" | "some-chars";
 
@@ -133,83 +133,83 @@ export class Field {
         });
     }
 
-    static fromKPRPCFieldDTO(f: FieldDto) {
-        let type: FieldType = "text";
-        let locatorType = "text";
+    // static fromKPRPCFieldDTO(f: FieldDto) {
+    //     let type: FieldType = "text";
+    //     let locatorType = "text";
+    //
+    //     switch (f.type) {
+    //         case FormFieldTypeDTO.password:
+    //             type = "password";
+    //             locatorType = "password";
+    //             break;
+    //         case FormFieldTypeDTO.radio:
+    //             type = "existing";
+    //             locatorType = "radio";
+    //             break;
+    //         case FormFieldTypeDTO.checkbox:
+    //             type = "boolean";
+    //             locatorType = "checkbox";
+    //             break;
+    //         case FormFieldTypeDTO.select:
+    //             type = "existing";
+    //             locatorType = "select";
+    //             break;
+    //         case FormFieldTypeDTO.username:
+    //             type = "text";
+    //             locatorType = "text";
+    //             break;
+    //         case FormFieldTypeDTO.text:
+    //             type = "text";
+    //             locatorType = "text";
+    //             break;
+    //     }
+    //
+    //     return new Field({
+    //         name: f.displayName || f.name,
+    //         uuid: utils.newGUID(),
+    //         value: f.value,
+    //         resetValue: f.value,
+    //         type: type,
+    //         locators: [
+    //             new Locator({
+    //                 id: f.id,
+    //                 name: f.name,
+    //                 type: locatorType
+    //             })
+    //         ]
+    //     });
+    // }
 
-        switch (f.type) {
-            case FormFieldTypeDTO.password:
-                type = "password";
-                locatorType = "password";
-                break;
-            case FormFieldTypeDTO.radio:
-                type = "existing";
-                locatorType = "radio";
-                break;
-            case FormFieldTypeDTO.checkbox:
-                type = "boolean";
-                locatorType = "checkbox";
-                break;
-            case FormFieldTypeDTO.select:
-                type = "existing";
-                locatorType = "select";
-                break;
-            case FormFieldTypeDTO.username:
-                type = "text";
-                locatorType = "text";
-                break;
-            case FormFieldTypeDTO.text:
-                type = "text";
-                locatorType = "text";
-                break;
-        }
-
-        return new Field({
-            name: f.displayName || f.name,
-            uuid: utils.newGUID(),
-            value: f.value,
-            resetValue: f.value,
-            type: type,
-            locators: [
-                new Locator({
-                    id: f.id,
-                    name: f.name,
-                    type: locatorType
-                })
-            ]
-        });
-    }
-
-    static toKPRPCFieldDTO(f: Field, isUsername: boolean) {
-        let fft: FormFieldTypeDTO;
-
-        switch (f.locators[0].type) {
-            case "password":
-                fft = FormFieldTypeDTO.password;
-                break;
-            case "radio":
-                fft = FormFieldTypeDTO.radio;
-                break;
-            case "checkbox":
-                fft = FormFieldTypeDTO.checkbox;
-                break;
-            case "select-one":
-                fft = FormFieldTypeDTO.select;
-                break;
-            default:
-                fft = isUsername ? FormFieldTypeDTO.username : FormFieldTypeDTO.text;
-                break;
-        }
-
-        return {
-            displayName: f.name,
-            id: f.locators[0].id,
-            name: f.locators[0].name,
-            type: fft,
-            value: f.value,
-            page: -1
-        } as FieldDto;
-    }
+    // static toKPRPCFieldDTO(f: Field, isUsername: boolean) {
+    //     let fft: FormFieldTypeDTO;
+    //
+    //     switch (f.locators[0].type) {
+    //         case "password":
+    //             fft = FormFieldTypeDTO.password;
+    //             break;
+    //         case "radio":
+    //             fft = FormFieldTypeDTO.radio;
+    //             break;
+    //         case "checkbox":
+    //             fft = FormFieldTypeDTO.checkbox;
+    //             break;
+    //         case "select-one":
+    //             fft = FormFieldTypeDTO.select;
+    //             break;
+    //         default:
+    //             fft = isUsername ? FormFieldTypeDTO.username : FormFieldTypeDTO.text;
+    //             break;
+    //     }
+    //
+    //     return {
+    //         displayName: f.name,
+    //         id: f.locators[0].id,
+    //         name: f.locators[0].name,
+    //         type: fft,
+    //         value: f.value,
+    //         page: -1
+    //     } as FieldDto;
+    // }
 }
 
 // Might be other element types but main thing is they have the labels property
