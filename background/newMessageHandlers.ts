@@ -45,7 +45,7 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         //     null
         // );
         p.postMessage({
-            isForegroundTab: true,
+            // isForegroundTab: true,
             findMatchesResult: result
         } as AddonMessage);
     }
@@ -60,11 +60,11 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
     //     //     /* whatever */
     //     // }
     // }
-    if (msg.entries) {
-        console.log("msg.entries");
-        // window.kee.tabStates.get(this.sender.tab.id).frames.get(this.sender.frameId).entries =
-        //     msg.entries;
-    }
+    // if (msg.entries) {
+    //     console.log("msg.entries");
+    //     // window.kee.tabStates.get(this.sender.tab.id).frames.get(this.sender.frameId).entries =
+    //     //     msg.entries;
+    // }
     if (msg.submittedData) {
         console.log("msg.submittedData --> urlおよびID/Passのフィールド、メタデータを受け取る");
         const persistentItem = {

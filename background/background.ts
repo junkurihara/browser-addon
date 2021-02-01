@@ -3,7 +3,7 @@
 import { KeeLog } from "../common/Logger";
 import { configManager } from "../common/ConfigManager";
 // import { pageMessageHandler } from "./messageHandlers";
-import { AddonMessage } from "../common/AddonMessage";
+// import { AddonMessage } from "../common/AddonMessage";
 // import { Action } from "../common/Action";
 // import { AddonMessage } from "../common/AddonMessage";
 // import store from "../store";
@@ -114,17 +114,17 @@ if (!__KeeIsRunningInAWebExtensionsBrowser) {
             await storage.handleMessage(p, response);
             //////////////////////////////////////////
         }); // pageMessageHandler.bind(p));
-        const tabId = p.sender.tab.id;
-        const frameId = p.sender.frameId;
-        const connectMessage = {
-            // initialState: store.state,
-            frameId,
-            tabId,
-            isForegroundTab: true // tabId === window.kee.foregroundTabId
-        } as AddonMessage;
-        console.log("connectMessage");
-        console.log(connectMessage);
-        p.postMessage(connectMessage);
+        // const tabId = p.sender.tab.id;
+        // const frameId = p.sender.frameId;
+        // const connectMessage = {
+        //     // initialState: store.state,
+        //     // frameId,
+        //     // tabId //,
+        //     // isForegroundTab: true // tabId === window.kee.foregroundTabId
+        // } as AddonMessage;
+        // console.log("connectMessage");
+        // console.log(connectMessage);
+        // p.postMessage(connectMessage);
     });
     ///////////////////////////////////////////////////
 
