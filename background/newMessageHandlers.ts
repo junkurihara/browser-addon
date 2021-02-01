@@ -7,10 +7,10 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
     console.log("------------- storage -------------");
     console.log(msg);
 
-    if (msg.mutation) {
-        console.log("msg.mutation");
-        // window.kee.syncBackground.onMessage(this, msg.mutation);
-    }
+    // if (msg.mutation) {
+    //     console.log("msg.mutation");
+    //     // window.kee.syncBackground.onMessage(this, msg.mutation);
+    // }
 
     // if (KeeLog && KeeLog.debug) {
     //     KeeLog.debug("In background script, received message from page script.");
@@ -49,17 +49,17 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
             findMatchesResult: result
         } as AddonMessage);
     }
-    if (msg.removeNotification) {
-        console.log("msg.removeNotification");
-        // window.kee.removeUserNotifications((n: KeeNotification) => n.id != msg.removeNotification);
-        // try {
-        //     window.kee.browserPopupPort.postMessage({
-        //         isForegroundTab: this.sender.tab.id === window.kee.foregroundTabId
-        //     } as AddonMessage);
-        // } catch (e) {
-        //     /* whatever */
-        // }
-    }
+    // if (msg.removeNotification) {
+    //     console.log("msg.removeNotification");
+    //     // window.kee.removeUserNotifications((n: KeeNotification) => n.id != msg.removeNotification);
+    //     // try {
+    //     //     window.kee.browserPopupPort.postMessage({
+    //     //         isForegroundTab: this.sender.tab.id === window.kee.foregroundTabId
+    //     //     } as AddonMessage);
+    //     // } catch (e) {
+    //     //     /* whatever */
+    //     // }
+    // }
     if (msg.entries) {
         console.log("msg.entries");
         // window.kee.tabStates.get(this.sender.tab.id).frames.get(this.sender.frameId).entries =

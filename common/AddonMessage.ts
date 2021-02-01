@@ -1,11 +1,11 @@
 import { Action } from "./Action";
 // import { FrameState } from "./FrameState";
 // import { KeeNotification } from "./KeeNotification";
-import { PasswordProfile } from "./model/PasswordProfile";
+// import { PasswordProfile } from "./model/PasswordProfile";
 import { SubmittedData } from "./SubmittedData";
 import { SaveData } from "./SaveData";
 // import { KeeState } from "../store/KeeState";
-import { MutationPayload } from "vuex";
+// import { MutationPayload } from "vuex";
 import { Entry } from "./model/Entry";
 
 // Do not use classes on this interface unless they are simple data
@@ -21,24 +21,24 @@ export interface AddonMessage {
     isForegroundTab?: boolean;
     tabId?: number;
     frameId?: number;
-    loadUrlUpgradeKee?: boolean;
+    // loadUrlUpgradeKee?: boolean;
     // addNotification?: KeeNotification;
-    removeNotification?: string;
+    // removeNotification?: string;
     findMatches?: { uri?: string; uuid?: string; DBfilename?: string };
     findMatchesResult?: Entry[];
     entries?: Entry[];
     action?: Action;
     selectedEntryIndex?: number;
-    passwordProfiles?: PasswordProfile[];
-    generatedPassword?: string;
-    passwordProfile?: string;
+    // passwordProfiles?: PasswordProfile[];
+    // generatedPassword?: string;
+    // passwordProfile?: string;
     submittedData?: SubmittedData;
     saveData?: SaveData;
-    loginEditor?: { uuid: string; DBfilename: string };
-    loginsFound?: boolean;
+    // loginEditor?: { uuid: string; DBfilename: string };
+    // loginsFound?: boolean;
     // initialState?: KeeState;
     // resetState?: KeeState;
-    mutation?: MutationPayload;
+    // mutation?: MutationPayload;
     url?: string;
-    copyToClipboard?: string;
+    // copyToClipboard?: string;
 }
