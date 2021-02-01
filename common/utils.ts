@@ -69,32 +69,32 @@ export class Utils {
         });
     }
 
-    intToByteArray(int) {
-        const byteArray = [0, 0, 0, 0];
-
-        for (let index = byteArray.length - 1; index >= 0; index--) {
-            const byte = int & 0xff;
-            byteArray[index] = byte;
-            int = (int - byte) / 256;
-        }
-
-        return byteArray;
-    }
-
-    intArrayToByteArray(intArray) {
-        const byteArray = new Array(intArray.length * 4);
-
-        for (let index = 0; index < intArray.length; index++) {
-            let int = intArray[index];
-            for (let j = 3; j >= 0; j--) {
-                const byte = int & 0xff;
-                byteArray[index * 4 + j] = byte;
-                int = (int - byte) / 256;
-            }
-        }
-
-        return byteArray;
-    }
+    // intToByteArray(int) {
+    //     const byteArray = [0, 0, 0, 0];
+    //
+    //     for (let index = byteArray.length - 1; index >= 0; index--) {
+    //         const byte = int & 0xff;
+    //         byteArray[index] = byte;
+    //         int = (int - byte) / 256;
+    //     }
+    //
+    //     return byteArray;
+    // }
+    //
+    // intArrayToByteArray(intArray) {
+    //     const byteArray = new Array(intArray.length * 4);
+    //
+    //     for (let index = 0; index < intArray.length; index++) {
+    //         let int = intArray[index];
+    //         for (let j = 3; j >= 0; j--) {
+    //             const byte = int & 0xff;
+    //             byteArray[index * 4 + j] = byte;
+    //             int = (int - byte) / 256;
+    //         }
+    //     }
+    //
+    //     return byteArray;
+    // }
 
     stringToByteArray(str) {
         const e = new TextEncoder();
@@ -118,16 +118,16 @@ export class Utils {
         return view;
     }
 
-    base64toByteArray(input) {
-        const binary = atob(input);
-        const len = binary.length;
-        const buffer = new ArrayBuffer(len);
-        const view = new Uint8Array(buffer);
-        for (let i = 0; i < len; i++) {
-            view[i] = binary.charCodeAt(i);
-        }
-        return view;
-    }
+    // base64toByteArray(input) {
+    //     const binary = atob(input);
+    //     const len = binary.length;
+    //     const buffer = new ArrayBuffer(len);
+    //     const view = new Uint8Array(buffer);
+    //     for (let i = 0; i < len; i++) {
+    //         view[i] = binary.charCodeAt(i);
+    //     }
+    //     return view;
+    // }
 
     byteArrayToBase64(arrayBuffer): string {
         let base64 = "";
