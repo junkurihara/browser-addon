@@ -39,45 +39,45 @@ export class Field {
         this.locators = field.locators || [];
     }
 
-    private static getDisplayValueInternal(
-        field: Field,
-        revealPasswords: boolean,
-        replacementIfProtected: string
-    ) {
-        if (field.type === "boolean") {
-            return field.value === "KEEFOX_CHECKED_FLAG_TRUE" ? $STR("enabled") : $STR("disabled");
-        } else {
-            return field.type === "password" && !revealPasswords
-                ? replacementIfProtected
-                : field.value;
-        }
-    }
+    // private static getDisplayValueInternal(
+    //     field: Field,
+    //     revealPasswords: boolean,
+    //     replacementIfProtected: string
+    // ) {
+    //     if (field.type === "boolean") {
+    //         return field.value === "KEEFOX_CHECKED_FLAG_TRUE" ? $STR("enabled") : $STR("disabled");
+    //     } else {
+    //         return field.type === "password" && !revealPasswords
+    //             ? replacementIfProtected
+    //             : field.value;
+    //     }
+    // }
 
-    static getDisplayValue(field: Field, revealPasswords: boolean) {
-        return Field.getDisplayValueInternal(
-            field,
-            revealPasswords,
-            "*".repeat(field.value.length)
-        );
-    }
+    // static getDisplayValue(field: Field, revealPasswords: boolean) {
+    //     return Field.getDisplayValueInternal(
+    //         field,
+    //         revealPasswords,
+    //         "*".repeat(field.value.length)
+    //     );
+    // }
 
-    static getDisplayName(field: Field) {
-        if (field.name === "KeePass username") {
-            return $STR("username");
-        } else if (field.name === "KeePass password") {
-            return $STR("password");
-        } else {
-            return field.name ? field.name : "[ " + $STR("no_name") + " ]";
-        }
-    }
+    // static getDisplayName(field: Field) {
+    //     if (field.name === "KeePass username") {
+    //         return $STR("username");
+    //     } else if (field.name === "KeePass password") {
+    //         return $STR("password");
+    //     } else {
+    //         return field.name ? field.name : "[ " + $STR("no_name") + " ]";
+    //     }
+    // }
 
-    static getDisplayTooltip(field: Field, revealPasswords: boolean) {
-        return (
-            Field.getDisplayName(field) +
-            ": " +
-            Field.getDisplayValueInternal(field, revealPasswords, $STR("click_to_reveal_hide"))
-        );
-    }
+    // static getDisplayTooltip(field: Field, revealPasswords: boolean) {
+    //     return (
+    //         Field.getDisplayName(field) +
+    //         ": " +
+    //         Field.getDisplayValueInternal(field, revealPasswords, $STR("click_to_reveal_hide"))
+    //     );
+    // }
 
     static typeFromDOMtype(domType: string): FieldType {
         // We can't know every type that may exist in future so assume:
