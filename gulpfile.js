@@ -12,6 +12,8 @@ var gulpIf = require("gulp-if");
 var signAddon = require("sign-addon").default;
 var rollup = require("rollup");
 var resolve = require("@rollup/plugin-node-resolve").nodeResolve;
+var json = require("@rollup/plugin-json");
+var builtins = require("rollup-plugin-node-builtins");
 var typescript = require("rollup-plugin-typescript2");
 var terser = require("rollup-plugin-terser").terser;
 var vue = require("rollup-plugin-vue");
@@ -253,8 +255,13 @@ gulp.task(
 
 var executeRollup = function () {
     const plugins = [
-        resolve(),
+        resolve({
+            // browser: true,
+            preferBuiltins: false
+        }),
+        builtins(),
         commonjs(),
+        json(),
         rollupReplace({
             "strict: true, //__VUEX_STRICT_CONFIG__": WATCH ? "strict: true," : ""
         }),

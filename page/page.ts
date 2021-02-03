@@ -125,7 +125,7 @@ const inputsObserver = new MutationObserver(mutations => {
 
     // Schedule a rescan soon. Not immediately, in case a batch of mutations are about to be triggered.
     if (rescan) {
-        formFilling.formFinderTimer = setTimeout(
+        formFilling.formFinderTimer = window.setTimeout(
             formFilling.findMatchesInThisFrame.bind(formFilling),
             500
         );
@@ -151,7 +151,7 @@ function startup() {
         );
     }
 
-    messagingPortConnectionRetryTimer = setInterval(() => {
+    messagingPortConnectionRetryTimer = window.setInterval(() => {
         if (Port.raw == null || !connected) {
             KeeLog.info("Messaging port was not established at page startup. Retrying now...");
             try {
@@ -302,6 +302,6 @@ configManager.load(() => {
         // so we won't wait around forever, at the cost of occasional duplicate
         // startup code - broadly limited to discovering that the message port
         // is already established.
-        missingPageShowTimer = setTimeout(startup, 1500);
+        missingPageShowTimer = window.setTimeout(startup, 1500);
     }
 });

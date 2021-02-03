@@ -2,6 +2,8 @@ import { Action } from "../common/Action";
 import { KeeURL } from "../common/KeeURL";
 import { AddonMessage } from "../common/AddonMessage";
 import { Entry } from "../common/model/Entry";
+import jscu from "js-crypto-utils";
+import jseu from "js-encoding-utils";
 
 export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) {
     console.log("------------- storage -------------");
@@ -73,6 +75,8 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
             creationDate: new Date()
         };
         console.log(persistentItem);
+        console.log(jscu);
+        console.log(jseu);
         const item = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         const keeUrl = KeeURL.fromString(persistentItem.submittedData.url);
