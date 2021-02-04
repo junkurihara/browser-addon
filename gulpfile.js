@@ -48,7 +48,7 @@ const globStaticLib = "lib/**/*.*";
 const globStaticBackground = "background/*.{css,html}";
 const globStaticPage = "page/*.{css,html}";
 // const globStaticPanels = "panels/*.{css,html}";
-const globStaticPopup = "popup/*.{css,html}";
+const globStaticPopup = "popup/*.{css,html,js}";
 
 /********** CLEANING **********/
 
