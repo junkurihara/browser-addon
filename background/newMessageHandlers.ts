@@ -5,6 +5,11 @@ import { Entry } from "../common/model/Entry";
 import jscu from "js-crypto-utils";
 import jseu from "js-encoding-utils";
 
+const passphrase = "omgomg!";
+const hash = "SHA-256";
+const iter = 2048;
+const dkLen = 32;
+
 export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) {
     console.log("------------- storage -------------");
     console.log(msg);
@@ -29,14 +34,47 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         console.log(keeUrl.domain);
         console.log(matchedEntry);
         console.log("------------");
-        const result = Object.keys(matchedEntry).map(
-            key =>
+
+        // DECRYPT HERE!
+        let result = [];
+        if (Object.keys(matchedEntry).length > 0) {
+            const encryptedObject = matchedEntry[keeUrl.domainWithPort];
+            const salt = jseu.encoder.decodeBase64(encryptedObject.pbkdfObject.salt);
+            const key = await jscu.pbkdf.pbkdf2(
+                passphrase,
+                salt as Uint8Array,
+                encryptedObject.pbkdfObject.iter,
+                encryptedObject.pbkdfObject.dkLen,
+                encryptedObject.pbkdfObject.hash
+            );
+            const iv = jseu.encoder.decodeBase64(encryptedObject.ciphertextObject.iv);
+            const ciphertext = jseu.encoder.decodeBase64(
+                encryptedObject.ciphertextObject.ciphertext
+            );
+            const plaintext = await jscu.aes.decrypt(ciphertext as Uint8Array, key, {
+                name: encryptedObject.ciphertextObject.name,
+                iv: iv as Uint8Array
+            });
+            const decryptedObject = JSON.parse(jseu.encoder.arrayBufferToString(plaintext));
+            console.log("decryptedObject");
+            console.log(decryptedObject);
+            result = [
                 new Entry({
-                    fields: matchedEntry[key].fields,
-                    URLs: [key],
-                    title: matchedEntry[key].title
+                    fields: decryptedObject.fields,
+                    URLs: [keeUrl.domainWithPort],
+                    title: decryptedObject.title
                 })
-        );
+            ];
+        }
+
+        // const result = Object.keys(matchedEntry).map(
+        //     key =>
+        //         new Entry({
+        //             fields: matchedEntry[key].fields,
+        //             URLs: [key],
+        //             title: matchedEntry[key].title
+        //         })
+        // );
         // window.kee.tabStates.get(this.sender.tab.id).frames.get(this.sender.frameId).entries = [];
         // const result = await window.kee.findLogins(
         //     msg.findMatches.uri,
@@ -75,12 +113,30 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
             creationDate: new Date()
         };
         console.log(persistentItem);
-        console.log(jscu);
-        console.log(jseu);
         const item = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         const keeUrl = KeeURL.fromString(persistentItem.submittedData.url);
-        item[keeUrl.domainWithPort] = persistentItem.submittedData;
+
+        // ENCRYPT HERE!
+        const salt = jscu.random.getRandomBytes(32);
+        const key = await jscu.pbkdf.pbkdf2(passphrase, salt, iter, 32, hash);
+        const plaintext = jseu.encoder.stringToArrayBuffer(
+            JSON.stringify(persistentItem.submittedData)
+        );
+        const iv = jscu.random.getRandomBytes(16);
+        const ciphertext = await jscu.aes.encrypt(plaintext, key, { name: "AES-CBC", iv });
+        const pbkdfObject = { salt: jseu.encoder.encodeBase64(salt), iter, dkLen, hash };
+        const ciphertextObject = {
+            ciphertext: jseu.encoder.encodeBase64(ciphertext),
+            iv: jseu.encoder.encodeBase64(iv),
+            name: "AES-CBC"
+        };
+        const encryptedObject = { pbkdfObject, ciphertextObject };
+        console.log("encryptedObject");
+        console.log(encryptedObject);
+
+        item[keeUrl.domainWithPort] = encryptedObject; // persistentItem.submittedData;
+        console.log(item);
         await browser.storage.local.set(item);
 
         console.log("------ current browser.storage.local ------");
