@@ -132,7 +132,10 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         const key = await jscu.pbkdf.pbkdf2(passphrase, salt, iter, 32, hash);
         const plaintext = new TextEncoder().encode(JSON.stringify(persistentItem.submittedData));
         const iv = jscu.random.getRandomBytes(16);
-        const ciphertext = await jscu.aes.encrypt(new Uint8Array(plaintext), key, { name: "AES-CBC", iv });
+        const ciphertext = await jscu.aes.encrypt(new Uint8Array(plaintext), key, {
+            name: "AES-CBC",
+            iv
+        });
         const pbkdfObject = { salt: jseu.encoder.encodeBase64(salt), iter, dkLen, hash };
         const ciphertextObject = {
             ciphertext: jseu.encoder.encodeBase64(ciphertext),
