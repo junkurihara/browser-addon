@@ -5,7 +5,7 @@ import { Entry } from "../common/model/Entry";
 import jscu from "js-crypto-utils";
 import jseu from "js-encoding-utils";
 
-const passphrase = "omgomg!";
+const defaultPassphrase = "omgomg!";
 const hash = "SHA-256";
 const iter = 2048;
 const dkLen = 32;
@@ -40,6 +40,8 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         if (Object.keys(matchedEntry).length > 0) {
             const encryptedObject = matchedEntry[keeUrl.domainWithPort];
             const salt = jseu.encoder.decodeBase64(encryptedObject.pbkdfObject.salt);
+            const passphraseObj: any = await browser.storage.local.get("#passphrase");
+            const passphrase: string = passphraseObj ? passphraseObj['#passphrase'] : defaultPassphrase;
             const key = await jscu.pbkdf.pbkdf2(
                 passphrase,
                 salt as Uint8Array,
@@ -119,6 +121,8 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
 
         // ENCRYPT HERE!
         const salt = jscu.random.getRandomBytes(32);
+        const passphraseObj: any = await browser.storage.local.get("#passphrase");
+        const passphrase: string = passphraseObj ? passphraseObj['#passphrase'] : defaultPassphrase;
         const key = await jscu.pbkdf.pbkdf2(passphrase, salt, iter, 32, hash);
         const plaintext = jseu.encoder.stringToArrayBuffer(
             JSON.stringify(persistentItem.submittedData)

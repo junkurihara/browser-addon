@@ -18,7 +18,7 @@ function setup() {
 
 function setPassphrase() {
     const passphrase = document.getElementById("passphraseInput").value;
-    localStorage.setItem("config", JSON.stringify({passphrase: passphrase}));
+    chrome.storage.local.set({"#passphrase": passphrase});
 }
 
 function listEntries() {
