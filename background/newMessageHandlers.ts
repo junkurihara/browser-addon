@@ -60,7 +60,6 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
                 name: encryptedObject.ciphertextObject.name,
                 iv: iv as Uint8Array
             });
-            console.log(jseu.encoder.arrayBufferToString(plaintext.buffer));
             const decryptedObject = JSON.parse(new TextDecoder("utf-8").decode(plaintext.buffer));
             console.log("decryptedObject");
             console.log(decryptedObject);
