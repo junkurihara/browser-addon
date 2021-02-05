@@ -10,8 +10,10 @@ function setup() {
             .getElementById("clearEntryButton")
             .addEventListener("click", clearEntries, false);
 
-        const conf = JSON.parse(localStorage.getItem("config"));
-        document.getElementById("passphraseInput").value = conf.passphrase;
+        chrome.storage.local.get(data => {
+            const passphrase = data['#passphrase'] ? data['#passphrase'] : "";
+            document.getElementById("passphraseInput").value = passphrase;
+        });
     }, false);
 
 }
