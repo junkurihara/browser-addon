@@ -41,7 +41,10 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
             const encryptedObject = matchedEntry[keeUrl.domainWithPort];
             const salt = jseu.encoder.decodeBase64(encryptedObject.pbkdfObject.salt);
             const passphraseObj: any = await browser.storage.local.get("#passphrase");
-            const passphrase: string = passphraseObj ? passphraseObj['#passphrase'] : defaultPassphrase;
+            const passphrase: string =
+                Object.keys(passphraseObj).length > 0
+                    ? passphraseObj["#passphrase"]
+                    : defaultPassphrase;
             const key = await jscu.pbkdf.pbkdf2(
                 passphrase,
                 salt as Uint8Array,
@@ -57,7 +60,8 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
                 name: encryptedObject.ciphertextObject.name,
                 iv: iv as Uint8Array
             });
-            const decryptedObject = JSON.parse(jseu.encoder.arrayBufferToString(plaintext));
+            console.log(jseu.encoder.arrayBufferToString(plaintext.buffer));
+            const decryptedObject = JSON.parse(new TextDecoder("utf-8").decode(plaintext.buffer));
             console.log("decryptedObject");
             console.log(decryptedObject);
             result = [
@@ -122,13 +126,14 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
         // ENCRYPT HERE!
         const salt = jscu.random.getRandomBytes(32);
         const passphraseObj: any = await browser.storage.local.get("#passphrase");
-        const passphrase: string = passphraseObj ? passphraseObj['#passphrase'] : defaultPassphrase;
+        const passphrase: string =
+            Object.keys(passphraseObj).length > 0
+                ? passphraseObj["#passphrase"]
+                : defaultPassphrase;
         const key = await jscu.pbkdf.pbkdf2(passphrase, salt, iter, 32, hash);
-        const plaintext = jseu.encoder.stringToArrayBuffer(
-            JSON.stringify(persistentItem.submittedData)
-        );
+        const plaintext = new TextEncoder().encode(JSON.stringify(persistentItem.submittedData));
         const iv = jscu.random.getRandomBytes(16);
-        const ciphertext = await jscu.aes.encrypt(plaintext, key, { name: "AES-CBC", iv });
+        const ciphertext = await jscu.aes.encrypt(new Uint8Array(plaintext), key, { name: "AES-CBC", iv });
         const pbkdfObject = { salt: jseu.encoder.encodeBase64(salt), iter, dkLen, hash };
         const ciphertextObject = {
             ciphertext: jseu.encoder.encodeBase64(ciphertext),
