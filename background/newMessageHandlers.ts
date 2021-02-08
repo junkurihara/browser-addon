@@ -10,8 +10,52 @@ const hash = "SHA-256";
 const iter = 2048;
 const dkLen = 32;
 
+const decryptAllEntries = async encryptedEntries => {
+    // decrypt here!
+    const salt = jseu.encoder.decodeBase64(encryptedEntries.pbkdfObject.salt);
+    const passphraseObj: any = await browser.storage.local.get("#passphrase");
+    const passphrase: string =
+        Object.keys(passphraseObj).length > 0 ? passphraseObj["#passphrase"] : defaultPassphrase;
+    const key = await jscu.pbkdf.pbkdf2(
+        passphrase,
+        salt as Uint8Array,
+        encryptedEntries.pbkdfObject.iter,
+        encryptedEntries.pbkdfObject.dkLen,
+        encryptedEntries.pbkdfObject.hash
+    );
+    const iv = jseu.encoder.decodeBase64(encryptedEntries.ciphertextObject.iv);
+    const ciphertext = jseu.encoder.decodeBase64(encryptedEntries.ciphertextObject.ciphertext);
+    const decryptedEntries = await jscu.aes.decrypt(ciphertext as Uint8Array, key, {
+        name: encryptedEntries.ciphertextObject.name,
+        iv: iv as Uint8Array
+    });
+    return JSON.parse(new TextDecoder("utf-8").decode(decryptedEntries.buffer));
+};
+
+const encryptAllEntries = async plaintextEntries => {
+    // ENCRYPT HERE!
+    const salt = jscu.random.getRandomBytes(32);
+    const passphraseObj: any = await browser.storage.local.get("#passphrase");
+    const passphrase: string =
+        Object.keys(passphraseObj).length > 0 ? passphraseObj["#passphrase"] : defaultPassphrase;
+    const key = await jscu.pbkdf.pbkdf2(passphrase, salt, iter, 32, hash);
+    const plaintext = new TextEncoder().encode(JSON.stringify(plaintextEntries));
+    const iv = jscu.random.getRandomBytes(16);
+    const ciphertext = await jscu.aes.encrypt(new Uint8Array(plaintext), key, {
+        name: "AES-CBC",
+        iv
+    });
+    const pbkdfObject = { salt: jseu.encoder.encodeBase64(salt), iter, dkLen, hash };
+    const ciphertextObject = {
+        ciphertext: jseu.encoder.encodeBase64(ciphertext),
+        iv: jseu.encoder.encodeBase64(iv),
+        name: "AES-CBC"
+    };
+    return { pbkdfObject, ciphertextObject };
+};
+
 export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) {
-    console.log("------------- storage -------------");
+    console.log("------------- message -------------");
     console.log(msg);
 
     // if (msg.mutation) {
@@ -23,53 +67,40 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
     //     KeeLog.debug("In background script, received message from page script.");
     // }
 
+    let result = [];
     if (msg.findMatches) {
         console.log(
             "msg.findMatches --> ここで頑張ってurlからDBの中にマッチするエントリがあるか探す。" +
                 "exact match後に3レベルで検索…"
         );
-        const keeUrl = KeeURL.fromString(msg.findMatches.uri);
-        const matchedEntry = await browser.storage.local.get(keeUrl.domainWithPort);
-        console.log("------ Mathced entry -------");
-        console.log(keeUrl.domain);
-        console.log(matchedEntry);
-        console.log("------------");
+        // retrieve all data
+        const encryptedEntries = await browser.storage.local.get("#entries"); // Encrypted entriesの型定義してやった方がいい TODO
+        if (Object.keys(encryptedEntries).length > 0) {
+            const entries = await decryptAllEntries(encryptedEntries["#entries"]);
 
-        // DECRYPT HERE!
-        let result = [];
-        if (Object.keys(matchedEntry).length > 0) {
-            const encryptedObject = matchedEntry[keeUrl.domainWithPort];
-            const salt = jseu.encoder.decodeBase64(encryptedObject.pbkdfObject.salt);
-            const passphraseObj: any = await browser.storage.local.get("#passphrase");
-            const passphrase: string =
-                Object.keys(passphraseObj).length > 0
-                    ? passphraseObj["#passphrase"]
-                    : defaultPassphrase;
-            const key = await jscu.pbkdf.pbkdf2(
-                passphrase,
-                salt as Uint8Array,
-                encryptedObject.pbkdfObject.iter,
-                encryptedObject.pbkdfObject.dkLen,
-                encryptedObject.pbkdfObject.hash
-            );
-            const iv = jseu.encoder.decodeBase64(encryptedObject.ciphertextObject.iv);
-            const ciphertext = jseu.encoder.decodeBase64(
-                encryptedObject.ciphertextObject.ciphertext
-            );
-            const plaintext = await jscu.aes.decrypt(ciphertext as Uint8Array, key, {
-                name: encryptedObject.ciphertextObject.name,
-                iv: iv as Uint8Array
-            });
-            const decryptedObject = JSON.parse(new TextDecoder("utf-8").decode(plaintext.buffer));
-            console.log("decryptedObject");
-            console.log(decryptedObject);
-            result = [
-                new Entry({
-                    fields: decryptedObject.fields,
-                    URLs: [keeUrl.domainWithPort],
-                    title: decryptedObject.title
-                })
-            ];
+            console.log("------ all entries -------");
+            console.log(entries);
+            console.log("------------");
+
+            // search entry here!
+            const keeUrl = KeeURL.fromString(msg.findMatches.uri);
+            const matchedEntry = entries[keeUrl.domainWithPort];
+            if (typeof matchedEntry !== "undefined") {
+                console.log("------ Mathced entry -------");
+                console.log(keeUrl.domain);
+                console.log(matchedEntry);
+                console.log("------------");
+
+                result = [
+                    new Entry({
+                        fields: matchedEntry.fields,
+                        URLs: [keeUrl.domainWithPort],
+                        title: matchedEntry.title
+                    })
+                ];
+            } else {
+                console.log("no matched entry");
+            }
         }
 
         // const result = Object.keys(matchedEntry).map(
@@ -118,37 +149,33 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
             creationDate: new Date()
         };
         console.log(persistentItem);
-        const item = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         const keeUrl = KeeURL.fromString(persistentItem.submittedData.url);
 
-        // ENCRYPT HERE!
-        const salt = jscu.random.getRandomBytes(32);
-        const passphraseObj: any = await browser.storage.local.get("#passphrase");
-        const passphrase: string =
-            Object.keys(passphraseObj).length > 0
-                ? passphraseObj["#passphrase"]
-                : defaultPassphrase;
-        const key = await jscu.pbkdf.pbkdf2(passphrase, salt, iter, 32, hash);
-        const plaintext = new TextEncoder().encode(JSON.stringify(persistentItem.submittedData));
-        const iv = jscu.random.getRandomBytes(16);
-        const ciphertext = await jscu.aes.encrypt(new Uint8Array(plaintext), key, {
-            name: "AES-CBC",
-            iv
-        });
-        const pbkdfObject = { salt: jseu.encoder.encodeBase64(salt), iter, dkLen, hash };
-        const ciphertextObject = {
-            ciphertext: jseu.encoder.encodeBase64(ciphertext),
-            iv: jseu.encoder.encodeBase64(iv),
-            name: "AES-CBC"
-        };
-        const encryptedObject = { pbkdfObject, ciphertextObject };
+        const encryptedEntries = await browser.storage.local.get("#entries"); // TODO Encrypted entriesの型定義してやった方がいい
+
+        // retrieve all data
+        const entries =
+            Object.keys(encryptedEntries).length > 0
+                ? await decryptAllEntries(encryptedEntries["#entries"])
+                : {};
+
+        console.log("------ current entries -------");
+        console.log(entries);
+        console.log("------------");
+
+        // update entry
+        entries[keeUrl.domainWithPort] = persistentItem.submittedData;
+        // TODO: check change
+        console.log("------ updated entries -------");
+        console.log(entries);
+        console.log("------------");
+
+        const encryptedObject = await encryptAllEntries(entries);
         console.log("encryptedObject");
         console.log(encryptedObject);
 
-        item[keeUrl.domainWithPort] = encryptedObject; // persistentItem.submittedData;
-        console.log(item);
-        await browser.storage.local.set(item);
+        await browser.storage.local.set({ "#entries": encryptedObject });
 
         console.log("------ current browser.storage.local ------");
         console.log(await browser.storage.local.get());
