@@ -11,6 +11,8 @@ import { Action } from "../common/Action";
 // import { MutationPayload } from "vuex";
 import { Port } from "../common/port";
 
+//import { setupIframe } from "./injectedIframe";
+
 /* This orchestrates the main functions of the add-on
 on all website pages except those containing a KPRPC server */
 
@@ -295,6 +297,7 @@ let missingPageShowTimer: number;
 KeeLog.attachConfig({ logLevel: 4 });
 configManager.load(() => {
     configReady = true;
+    //setupIframe();
     if (pageShowFired) {
         startup();
     } else {
