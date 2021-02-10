@@ -58,10 +58,11 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
     console.log("------------- message -------------");
     console.log(msg);
 
-    // if (msg.mutation) {
-    //     console.log("msg.mutation");
-    //     // window.kee.syncBackground.onMessage(this, msg.mutation);
-    // }
+    // TODO: ここでpopupからの受信
+    if (msg.mutation) {
+        console.log("msg.mutation");
+        // window.kee.syncBackground.onMessage(this, msg.mutation);
+    }
 
     // if (KeeLog && KeeLog.debug) {
     //     KeeLog.debug("In background script, received message from page script.");

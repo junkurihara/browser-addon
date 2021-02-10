@@ -5,7 +5,7 @@ import { Action } from "./Action";
 import { SubmittedData } from "./SubmittedData";
 // import { SaveData } from "./SaveData";
 // import { KeeState } from "../store/KeeState";
-// import { MutationPayload } from "vuex";
+import { MutationPayload } from "vuex";
 import { Entry } from "./model/Entry";
 
 // Do not use classes on this interface unless they are simple data
@@ -38,7 +38,7 @@ export interface AddonMessage {
     // loginsFound?: boolean;
     // initialState?: KeeState;
     // resetState?: KeeState;
-    // mutation?: MutationPayload;
+    mutation?: MutationPayload;
     // url?: string;
     // copyToClipboard?: string;
 }
