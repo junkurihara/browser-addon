@@ -24,6 +24,13 @@ function setup() {
             });
 
             port = browser.runtime.connect({ name: "browserPopup" });
+            port.raw.onMessage.addListener(function (m) {
+                if (m.current) {
+                    document.getElementById("usernameInput1").value = m.username;
+                    document.getElementById("passwordInput1").value = m.password;
+                }
+            });
+            port.postMessage({action: 'credentialInfo'})
         },
         false
     );
