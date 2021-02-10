@@ -47,7 +47,9 @@ function clearEntries() {
 function registerNewEntry() {
     const username = document.getElementById("usernameInput1").value;
     const password = document.getElementById("passwordInput1").value;
-    port.postMessage({ mutation: { username, password } });
+    browser.tabs.query({ active: true, currentWindow: true }).then(t => {
+        port.postMessage({ mutation: { username, password, tabs: t } });
+    });
 }
 
 setup();
