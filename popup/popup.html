@@ -19,9 +19,13 @@
     <body style="overflow-y: hidden; font-size: 100%; width: 400px; height: 570px;"> <!-- Ubuntu injects some 75% font crap -->
         <div class="card">
             <div class="card-body">
-                <label for="passphraseInput">Passphrase</label>
-                <input type="password" class="form-control" id="passphraseInput" placeholder="入力してください">
-                <button type="button" class="btn btn-primary" id="passphraseButton">Set</button><br>
+                パスフレーズ
+                <div class="input-group mb-2">
+                    <input type="password" class="form-control" id="passphraseInput" placeholder="入力してください">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" id="passphraseButton">Set</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -35,10 +39,17 @@
                 <button type="button" class="btn btn-danger" id="clearEntryButton">記録全削除</button><br>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                ユーザ名<input type="text" class="form-control" id="usernameInput1" placeholder="入力してください">
+                パスワード<input type="password" class="form-control" id="passwordInput1" placeholder="入力してください">
+                <button type="button" class="btn btn-primary" id="entryRegistration">登録する</button>
+            </div>
+        </div>
 <!--        <div id="main" style="overflow-y: hidden">-->
 <!--        </div>-->
 <!--        <script src="../lib/detectWebExtensions.js"></script>-->
-<!--        <script src="../lib/tp/browser-polyfill.min.js"></script>-->
+            <script src="../lib/tp/browser-polyfill.min.js"></script>
 <!--        <script src="../lib/dollar-polyfill.js"></script>-->
 <!--        <script src="../lib/i18n.js"></script>-->
 <!--        <script src="../lib/moduleHack.js"></script>-->
