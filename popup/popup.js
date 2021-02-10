@@ -10,6 +10,10 @@ function setup() {
             .getElementById("clearEntryButton")
             .addEventListener("click", clearEntries, false);
 
+        document
+            .getElementById("entryRegistration")
+            .addEventListener("click", registerNewEntry, false);
+
         chrome.storage.local.get(data => {
             const passphrase = data['#passphrase'] ? data['#passphrase'] : "";
             document.getElementById("passphraseInput").value = passphrase;
@@ -31,6 +35,12 @@ function listEntries() {
 
 function clearEntries() {
     chrome.storage.local.clear();
+}
+
+function registerNewEntry() {
+    const username = document.getElementById("usernameInput1").value;
+    const password = document.getElementById("passwordInput1").value;
+    browser.runtime.Port.postMessage({mutation: {username, password}});
 }
 
 setup();
