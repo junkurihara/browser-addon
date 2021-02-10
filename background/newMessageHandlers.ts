@@ -58,9 +58,60 @@ export async function handleMessage(p: browser.runtime.Port, msg: AddonMessage) 
     console.log("------------- message -------------");
     console.log(msg);
 
-    // TODO: ここでpopupからの受信
+    // TODO: ここでpopupからの上書き受信
     if (msg.mutation) {
-        console.log("msg.mutation");
+        console.log("msg.mutation popupからid/passを上書き");
+        const submittedData = {
+            fields: [
+                {
+                    locators: [],
+                    name: "",
+                    resetValue: "",
+                    type: "text",
+                    uuid: "",
+                    value: msg.mutation.payload.username
+                },
+                {
+                    locators: [],
+                    name: "Password",
+                    resetValue: "",
+                    type: "password",
+                    value: msg.mutation.payload.password,
+                    uuid: ""
+                }
+            ],
+            isPasswordChangeForm: false,
+            isRegistrationForm: false,
+            title: msg.mutation.payload.tabs[0].title,
+            url: msg.mutation.payload.tabs[0].url
+        };
+
+        const keeUrl = KeeURL.fromString(submittedData.url);
+
+        const encryptedEntries = await browser.storage.local.get("#entries"); // TODO Encrypted entriesの型定義してやった方がいい
+
+        // retrieve all data
+        const entries =
+            Object.keys(encryptedEntries).length > 0
+                ? await decryptAllEntries(encryptedEntries["#entries"])
+                : {};
+
+        console.log("------ current entries -------");
+        console.log(entries);
+        console.log("------------");
+
+        // update entry
+        entries[keeUrl.domainWithPort] = submittedData;
+        // TODO: check change
+        console.log("------ updated entries -------");
+        console.log(entries);
+        console.log("------------");
+
+        const encryptedObject = await encryptAllEntries(entries);
+        console.log("encryptedObject");
+        console.log(encryptedObject);
+
+        await browser.storage.local.set({ "#entries": encryptedObject });
         // window.kee.syncBackground.onMessage(this, msg.mutation);
     }
 
